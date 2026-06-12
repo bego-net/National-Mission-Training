@@ -4,6 +4,11 @@ import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { Field } from "@/components/ui/Field";
 import {
+  ACCEPTED_PAYMENT_EXTENSIONS,
+  MAX_PAYMENT_FILE_SIZE,
+  validatePaymentFile,
+} from "@/lib/validations/payment";
+import {
   genderOptions,
   maritalStatusOptions,
   registrationSchema,
@@ -15,18 +20,35 @@ const inputClassName =
 const selectClassName =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20";
 
+const acceptAttribute = [
+  ...ACCEPTED_PAYMENT_EXTENSIONS.map((ext) =>
+    ext === "pdf" ? "application/pdf" : `image/${ext === "jpg" ? "jpeg" : ext}`,
+  ),
+  ...ACCEPTED_PAYMENT_EXTENSIONS.map((ext) => `.${ext}`),
+].join(",");
+
 export function RegistrationForm() {
   const router = useRouter();
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState("");
+
+  function onFormSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void handleSubmit(event);
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+    if (isSubmitting) return;
+
     setErrors({});
     setSubmitError("");
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const paymentFile = validatePaymentFile(formData.get("paymentScreenshot"));
+
     const raw = {
       fullName: formData.get("fullName"),
       phone: formData.get("phone"),
@@ -41,26 +63,44 @@ export function RegistrationForm() {
       needsAccommodation: formData.get("needsAccommodation") === "on",
     };
 
+    const fieldErrors: Record<string, string> = {};
+
+    if (!paymentFile.ok) {
+      fieldErrors.paymentScreenshot = paymentFile.error;
+    }
+
     const parsed = registrationSchema.safeParse(raw);
     if (!parsed.success) {
-      const fieldErrors: Record<string, string> = {};
       for (const issue of parsed.error.issues) {
         const key = String(issue.path[0] ?? "form");
         if (!fieldErrors[key]) fieldErrors[key] = issue.message;
       }
+    }
+
+    if (Object.keys(fieldErrors).length > 0 || !parsed.success || !paymentFile.ok) {
       setErrors(fieldErrors);
       return;
     }
+
+    formData.set(
+      "needsAccommodation",
+      parsed.data.needsAccommodation ? "true" : "false",
+    );
 
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/registrations", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(parsed.data),
+        body: formData,
+        credentials: "same-origin",
       });
 
-      const data = (await response.json()) as { error?: string; id?: string };
+      let data: { error?: string; id?: string } = {};
+      try {
+        data = (await response.json()) as { error?: string; id?: string };
+      } catch {
+        data = {};
+      }
 
       if (!response.ok) {
         setSubmitError(data.error ?? "ምዝገባው አልተሳካም። እባክዎ እንደገና ይሞክሩ።");
@@ -76,7 +116,7 @@ export function RegistrationForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+    <form onSubmit={onFormSubmit} className="space-y-6" noValidate>
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="sm:col-span-2">
           <Field label="ሙሉ ስም *" htmlFor="fullName" error={errors.fullName}>
@@ -216,6 +256,33 @@ export function RegistrationForm() {
               </span>
             </span>
           </label>
+        </div>
+
+        <div className="sm:col-span-2">
+          <Field
+            label="የክፍያ ማረጋገጫ ፎቶ *"
+            htmlFor="paymentScreenshot"
+            error={errors.paymentScreenshot}
+          >
+            <input
+              id="paymentScreenshot"
+              name="paymentScreenshot"
+              type="file"
+              accept={acceptAttribute}
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-blue-50 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-blue-700"
+              onChange={(e) =>
+                setSelectedFileName(e.target.files?.[0]?.name ?? "")
+              }
+            />
+            <p className="mt-1.5 text-xs text-slate-500">
+              jpg, jpeg, png, ወይም pdf — ከፍተኛው መጠን {MAX_PAYMENT_FILE_SIZE / (1024 * 1024)}MB
+            </p>
+            {selectedFileName && (
+              <p className="mt-1 text-xs font-medium text-slate-700">
+                የተመረጠ፡ {selectedFileName}
+              </p>
+            )}
+          </Field>
         </div>
       </div>
 
