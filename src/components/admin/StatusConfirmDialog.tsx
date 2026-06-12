@@ -33,12 +33,11 @@ export function StatusConfirmDialog({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 id="status-confirm-title" className="text-lg font-semibold text-slate-900">
-          ሁኔታ ለመቀየር ያረጋግጡ
+          Confirm Status Change
         </h2>
         <p className="mt-3 text-sm leading-relaxed text-slate-600">
-          <span className="font-medium text-slate-900">{participantName}</span> ምዝገባ
-          ከ <span className="font-medium">{statusLabels[currentStatus]}</span> ወደ{" "}
-          <span className="font-medium">{statusLabels[nextStatus]}</span> ይቀየራል።
+          The registration for <span className="font-medium text-slate-900">{participantName}</span> will be changed from <span className="font-medium">{statusLabels[currentStatus]}</span> to{" "}
+          <span className="font-medium">{statusLabels[nextStatus]}</span>.
         </p>
 
         <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
@@ -48,7 +47,7 @@ export function StatusConfirmDialog({
             disabled={isLoading}
             className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-60"
           >
-            ይቅር
+            Cancel
           </button>
           <button
             type="button"
@@ -56,7 +55,7 @@ export function StatusConfirmDialog({
             disabled={isLoading}
             className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800 disabled:opacity-60"
           >
-            {isLoading ? "በመቀየር ላይ..." : "አረጋግጥ"}
+            {isLoading ? "Updating..." : "Confirm"}
           </button>
         </div>
       </div>

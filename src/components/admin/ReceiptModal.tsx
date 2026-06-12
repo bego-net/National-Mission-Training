@@ -26,7 +26,7 @@ export function ReceiptModal({ url, participantName, onClose }: ReceiptModalProp
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4"
       role="dialog"
       aria-modal="true"
-      aria-label="የክፍያ ማረጋገጫ"
+      aria-label="Payment Confirmation"
       onClick={onClose}
     >
       <div
@@ -36,7 +36,7 @@ export function ReceiptModal({ url, participantName, onClose }: ReceiptModalProp
         <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-4 py-3 sm:px-6">
           <div className="min-w-0">
             <h2 className="truncate text-base font-semibold text-slate-900">
-              የክፍያ ማረጋገጫ
+              Payment Confirmation
             </h2>
             <p className="truncate text-sm text-slate-500">{participantName}</p>
           </div>
@@ -45,7 +45,7 @@ export function ReceiptModal({ url, participantName, onClose }: ReceiptModalProp
             onClick={onClose}
             className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
           >
-            ዝጋ
+            Close
           </button>
         </div>
 
@@ -75,7 +75,7 @@ export function ReceiptModal({ url, participantName, onClose }: ReceiptModalProp
           {isPdf ? (
             <iframe
               src={`${url}#toolbar=0`}
-              title={`የክፍያ ማረጋገጫ - ${participantName}`}
+              title={`Payment Confirmation - ${participantName}`}
               className="h-[60vh] w-full rounded-lg border border-slate-200 bg-white"
             />
           ) : (
@@ -83,7 +83,7 @@ export function ReceiptModal({ url, participantName, onClose }: ReceiptModalProp
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={url}
-                alt={`የክፍያ ማረጋገጫ - ${participantName}`}
+                alt={`Payment Confirmation - ${participantName}`}
                 className="max-w-none rounded-lg shadow-md transition-transform duration-200"
                 style={{ transform: `scale(${zoom})`, transformOrigin: "center center" }}
               />
@@ -98,7 +98,7 @@ export function ReceiptModal({ url, participantName, onClose }: ReceiptModalProp
             rel="noopener noreferrer"
             className="inline-flex w-full items-center justify-center rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-800 sm:w-auto"
           >
-            በአዲስ ትር ክፈት
+            Open in New Tab
           </a>
         </div>
       </div>
