@@ -6,6 +6,7 @@ import type { Gender, MaritalStatus, RegistrationStatus } from "@prisma/client";
 import { ReceiptModal } from "@/components/admin/ReceiptModal";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { StatusConfirmDialog } from "@/components/admin/StatusConfirmDialog";
+import { BadgeModal } from "@/components/admin/BadgeModal";
 import {
   ALL_REGISTRATION_STATUSES,
   genderLabels,
@@ -31,6 +32,8 @@ type Registration = {
   needsAccommodation: boolean;
   paymentScreenshot: string;
   status: RegistrationStatus;
+  registrationNumber?: string;
+  qrCode?: string;
   createdAt: string;
 };
 
@@ -82,6 +85,7 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
   const [receiptView, setReceiptView] = useState<ReceiptView | null>(null);
   const [pendingStatusChange, setPendingStatusChange] =
     useState<PendingStatusChange | null>(null);
+  const [badgeView, setBadgeView] = useState<Registration | null>(null);
 
   const fetchRegistrations = useCallback(async () => {
     setIsLoading(true);
@@ -173,6 +177,8 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
       timeStyle: "short",
     }).format(new Date(date));
   }
+
+
 
   return (
     <div className="min-h-full bg-slate-50/60 pb-12">
@@ -311,8 +317,13 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                     <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                       <div className="min-w-0 flex-1 space-y-1">
                         <div className="flex flex-wrap items-center gap-2">
-                          <h3 className="text-base font-bold text-slate-900">
+                          <h3 className="text-base font-bold text-slate-900 flex flex-wrap items-center gap-x-2">
                             {registration.fullName}
+                            {registration.registrationNumber && (
+                              <span className="text-xs font-mono font-bold bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
+                                {registration.registrationNumber}
+                              </span>
+                            )}
                           </h3>
                           <StatusBadge status={registration.status} />
                         </div>
@@ -343,6 +354,19 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                             View Receipt
+                          </button>
+                        )}
+
+                        {registration.status === "APPROVED" && (
+                          <button
+                            type="button"
+                            onClick={() => setBadgeView(registration)}
+                            className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/50 px-4 py-2 text-xs font-bold text-indigo-700 transition hover:bg-indigo-100"
+                          >
+                            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                            </svg>
+                            Print Badge
                           </button>
                         )}
 
@@ -426,22 +450,49 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
 
                     {expandedId === registration.id && (
                       <div className="mt-4 rounded-xl bg-slate-50/70 p-4 border border-slate-100">
-                        <dl className="grid gap-x-4 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
-                          <Detail label="Age" value={String(registration.age)} />
-                          <Detail label="Gender" value={genderLabels[registration.gender]} />
-                          <Detail
-                            label="Marital Status"
-                            value={maritalStatusLabels[registration.maritalStatus]}
-                          />
-                          <Detail label="Occupation" value={registration.occupation} />
-                          <Detail label="Address" value={registration.address} />
-                          <Detail label="Church Name" value={registration.parishName} />
-                          <Detail label="Ministry Area" value={registration.ministryArea} />
-                          <Detail
-                            label="Accommodation Required"
-                            value={registration.needsAccommodation ? "Yes" : "No"}
-                          />
-                        </dl>
+                        <div className="flex flex-col md:flex-row gap-6">
+                          {registration.qrCode && (
+                            <div className="flex flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-3 shadow-sm self-center md:self-start">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={registration.qrCode}
+                                alt={`QR Code - ${registration.registrationNumber}`}
+                                className="h-32 w-32 object-contain"
+                              />
+                              <span className="text-[10px] font-mono font-bold text-slate-500 mt-2">
+                                {registration.registrationNumber}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => setBadgeView(registration)}
+                                className="mt-3 inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-indigo-700 shadow-sm"
+                              >
+                                <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                </svg>
+                                Print
+                              </button>
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <dl className="grid gap-x-4 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+                              <Detail label="Age" value={String(registration.age)} />
+                              <Detail label="Gender" value={genderLabels[registration.gender]} />
+                              <Detail
+                                label="Marital Status"
+                                value={maritalStatusLabels[registration.maritalStatus]}
+                              />
+                              <Detail label="Occupation" value={registration.occupation} />
+                              <Detail label="Address" value={registration.address} />
+                              <Detail label="Church Name" value={registration.parishName} />
+                              <Detail label="Ministry Area" value={registration.ministryArea} />
+                              <Detail
+                                label="Accommodation Required"
+                                value={registration.needsAccommodation ? "Yes" : "No"}
+                              />
+                            </dl>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </article>
@@ -468,6 +519,13 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
           isLoading={actionId === pendingStatusChange.id}
           onConfirm={() => void confirmStatusChange()}
           onCancel={() => setPendingStatusChange(null)}
+        />
+      )}
+
+      {badgeView && (
+        <BadgeModal
+          registration={badgeView}
+          onClose={() => setBadgeView(null)}
         />
       )}
     </div>
