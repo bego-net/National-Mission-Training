@@ -51,6 +51,8 @@ export async function GET(request: Request) {
         needsAccommodation: true,
         paymentScreenshot: true,
         status: true,
+        registrationNumber: true,
+        qrCode: true,
         createdAt: true,
       },
     }),

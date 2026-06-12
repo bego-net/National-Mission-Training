@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import QRCode from "qrcode";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { updateStatusSchema } from "@/lib/validations/auth";
@@ -28,20 +29,62 @@ export async function PATCH(request: Request, context: RouteContext) {
 
     const existing = await prisma.participant.findUnique({
       where: { id },
-      select: { id: true, status: true },
+      select: { id: true, status: true, registrationNumber: true, qrCode: true },
     });
 
     if (!existing) {
       return NextResponse.json({ error: "Registration not found." }, { status: 404 });
     }
 
+    const nextStatus = parsed.data.status;
+    let registrationNumber = existing.registrationNumber;
+    let qrCode = existing.qrCode;
+
+    if (nextStatus === "APPROVED" && !registrationNumber) {
+      // Find the last generated registration number to increment
+      const lastApproved = await prisma.participant.findFirst({
+        where: {
+          registrationNumber: {
+            startsWith: "HGM-2026-",
+          },
+        },
+        orderBy: {
+          registrationNumber: "desc",
+        },
+        select: {
+          registrationNumber: true,
+        },
+      });
+
+      let nextNum = 1;
+      if (lastApproved && lastApproved.registrationNumber) {
+        const match = lastApproved.registrationNumber.match(/HGM-2026-(\d+)/);
+        if (match) {
+          nextNum = parseInt(match[1], 10) + 1;
+        }
+      }
+
+      registrationNumber = `HGM-2026-${String(nextNum).padStart(4, "0")}`;
+      qrCode = await QRCode.toDataURL(registrationNumber, {
+        errorCorrectionLevel: "H",
+        margin: 1,
+        width: 300,
+      });
+    }
+
     const updated = await prisma.participant.update({
       where: { id },
-      data: { status: parsed.data.status },
+      data: {
+        status: nextStatus,
+        registrationNumber,
+        qrCode,
+      },
       select: {
         id: true,
         fullName: true,
         status: true,
+        registrationNumber: true,
+        qrCode: true,
       },
     });
 
