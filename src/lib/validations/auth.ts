@@ -8,7 +8,7 @@ export const loginSchema = z.object({
 export type LoginInput = z.infer<typeof loginSchema>;
 
 export const updateStatusSchema = z.object({
-  status: z.enum(["APPROVED", "REJECTED"], {
+  status: z.enum(["PENDING", "APPROVED", "REJECTED"], {
     message: "ትክክለኛ ሁኔታ ይምረጡ",
   }),
 });
