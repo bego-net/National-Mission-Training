@@ -1,33 +1,33 @@
 import type { Gender, MaritalStatus, RegistrationStatus } from "@prisma/client";
 
 export const genderLabels: Record<Gender, string> = {
-  MALE: "ወንድ",
-  FEMALE: "ሴት",
+  MALE: "Male",
+  FEMALE: "Female",
 };
 
 export const maritalStatusLabels: Record<MaritalStatus, string> = {
-  SINGLE: "ያላገባ/ች",
-  MARRIED: "ያገባ/ች",
-  DIVORCED: "የፈታ/ች",
-  WIDOWED: "የሞተበት/ባት",
+  SINGLE: "Single",
+  MARRIED: "Married",
+  DIVORCED: "Divorced",
+  WIDOWED: "Widowed",
 };
 
 export const statusLabels: Record<RegistrationStatus, string> = {
-  PENDING: "በመጠባበቅ ላይ",
-  APPROVED: "ተፀድቋል",
-  REJECTED: "ተቀባይነት አልተሰጠም",
+  PENDING: "Pending",
+  APPROVED: "Approved",
+  REJECTED: "Rejected",
 };
 
 export const statusStyles: Record<RegistrationStatus, string> = {
-  PENDING: "bg-amber-100 text-amber-800",
-  APPROVED: "bg-green-100 text-green-800",
-  REJECTED: "bg-red-100 text-red-800",
+  PENDING: "bg-amber-50 text-amber-800 border border-amber-200/60",
+  APPROVED: "bg-emerald-50 text-emerald-800 border border-emerald-200/60",
+  REJECTED: "bg-rose-50 text-rose-800 border border-rose-200/60",
 };
 
 export const statusActionLabels: Record<RegistrationStatus, string> = {
-  PENDING: "ወደ በመጠባበቅ",
-  APPROVED: "ፀድቅ",
-  REJECTED: "አትቀበል",
+  PENDING: "Set Pending",
+  APPROVED: "Approve",
+  REJECTED: "Reject",
 };
 
 export const statusActionStyles: Record<RegistrationStatus, string> = {
