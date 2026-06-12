@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum MaritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+  WIDOWED
+}
+
+enum RegistrationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Participant {
+  id                 String             @id @default(cuid())
+  fullName           String
+  phone              String
+  age                Int
+  gender             Gender
+  maritalStatus      MaritalStatus
+  occupation         String
+  address            String
+  churchName         String
+  parishName         String
+  ministryArea       String
+  needsAccommodation Boolean            @default(false)
+  status             RegistrationStatus @default(PENDING)
+  createdAt          DateTime           @default(now())
+
+  @@index([status])
+  @@index([fullName])
+  @@index([phone])
+  @@index([createdAt])
+}
