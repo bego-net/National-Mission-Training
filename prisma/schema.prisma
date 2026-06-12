@@ -38,6 +38,7 @@ model Participant {
   parishName         String
   ministryArea       String
   needsAccommodation Boolean            @default(false)
+  paymentScreenshot  String             @default("")
   status             RegistrationStatus @default(PENDING)
   createdAt          DateTime           @default(now())
 
