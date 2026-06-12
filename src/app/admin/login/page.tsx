@@ -4,8 +4,8 @@ import { LoginForm } from "@/components/admin/LoginForm";
 import { getSession } from "@/lib/auth";
 
 export const metadata = {
-  title: "አስተዳዳሪ መግቢያ | HGM",
-  description: "የአስተዳዳሪ መግቢያ ገጽ",
+  title: "Admin Login | HGM",
+  description: "Admin Login Page",
 };
 
 export default async function AdminLoginPage() {
@@ -22,9 +22,9 @@ export default async function AdminLoginPage() {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-700 text-sm font-bold text-white">
               HGM
             </div>
-            <h1 className="mt-4 text-2xl font-bold text-slate-900">አስተዳዳሪ መግቢያ</h1>
+            <h1 className="mt-4 text-2xl font-bold text-slate-900">Admin Login</h1>
             <p className="mt-2 text-sm text-slate-600">
-              ምዝገባዎችን ለማስተዳደር ይግቡ
+              Sign in to manage registrations
             </p>
           </div>
 
@@ -34,7 +34,7 @@ export default async function AdminLoginPage() {
 
           <p className="mt-6 text-center text-sm text-slate-500">
             <Link href="/" className="font-medium text-blue-700 hover:text-blue-800">
-              ← ወደ መነሻ ተመለስ
+              ← Back to Home
             </Link>
           </p>
         </div>

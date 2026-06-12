@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "የተጠቃሚ ስም እና የይለፍ ቃል ያስገቡ።" },
+        { error: "Please enter your username and password." },
         { status: 400 },
       );
     }
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
     if (!verifyAdminCredentials(username, password)) {
       return NextResponse.json(
-        { error: "የተጠቃሚ ስም ወይም የይለፍ ቃል ትክክል አይደለም።" },
+        { error: "Invalid username or password." },
         { status: 401 },
       );
     }
@@ -28,7 +28,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(
-      { error: "መግቢያ አልተሳካም። እባክዎ እንደገና ይሞክሩ።" },
+      { error: "Login failed. Please try again." },
       { status: 500 },
     );
   }

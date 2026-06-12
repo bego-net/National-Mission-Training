@@ -47,14 +47,14 @@ export function LoginForm() {
       const data = (await response.json()) as { error?: string };
 
       if (!response.ok) {
-        setSubmitError(data.error ?? "መግቢያ አልተሳካም።");
+        setSubmitError(data.error ?? "Login failed.");
         return;
       }
 
       router.push("/admin");
       router.refresh();
     } catch {
-      setSubmitError("የአውታረ መረብ ስህተት። እባክዎ እንደገና ይሞክሩ።");
+      setSubmitError("Network error. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -62,7 +62,7 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-      <Field label="የተጠቃሚ ስም" htmlFor="username" error={errors.username}>
+      <Field label="Username" htmlFor="username" error={errors.username}>
         <input
           id="username"
           name="username"
@@ -73,7 +73,7 @@ export function LoginForm() {
         />
       </Field>
 
-      <Field label="የይለፍ ቃል" htmlFor="password" error={errors.password}>
+      <Field label="Password" htmlFor="password" error={errors.password}>
         <input
           id="password"
           name="password"
@@ -95,7 +95,7 @@ export function LoginForm() {
         disabled={isSubmitting}
         className="w-full rounded-lg bg-blue-700 px-6 py-3 text-base font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {isSubmitting ? "በመግባት ላይ..." : "ግባ"}
+        {isSubmitting ? "Signing in..." : "Sign In"}
       </button>
     </form>
   );
