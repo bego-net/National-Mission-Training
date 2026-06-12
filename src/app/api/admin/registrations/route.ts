@@ -2,11 +2,10 @@ import { type RegistrationStatus } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-
 export async function GET(request: Request) {
   const session = await getSession();
   if (!session) {
-    return NextResponse.json({ error: "መግቢያ ያስፈልጋል።" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);

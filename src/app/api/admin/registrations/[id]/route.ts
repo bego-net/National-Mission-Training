@@ -10,7 +10,7 @@ type RouteContext = {
 export async function PATCH(request: Request, context: RouteContext) {
   const session = await getSession();
   if (!session) {
-    return NextResponse.json({ error: "መግቢያ ያስፈልጋል።" }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
 
   const { id } = await context.params;
@@ -21,7 +21,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "ትክክለኛ ሁኔታ ይምረጡ።" },
+        { error: "Select a valid status." },
         { status: 400 },
       );
     }
@@ -32,7 +32,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     });
 
     if (!existing) {
-      return NextResponse.json({ error: "ምዝገባ አልተገኘም።" }, { status: 404 });
+      return NextResponse.json({ error: "Registration not found." }, { status: 404 });
     }
 
     const updated = await prisma.participant.update({
@@ -49,7 +49,7 @@ export async function PATCH(request: Request, context: RouteContext) {
   } catch (error) {
     console.error("Update registration error:", error);
     return NextResponse.json(
-      { error: "ሁኔታ ማዘመን አልተሳካም።" },
+      { error: "Failed to update status." },
       { status: 500 },
     );
   }
