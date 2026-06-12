@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
+import { uploadPaymentScreenshot } from "@/lib/cloudinary";
+
+export const runtime = "nodejs";
 import { prisma } from "@/lib/prisma";
+import { validatePaymentFile } from "@/lib/validations/payment";
 import {
   normalizePhone,
   registrationSchema,
@@ -7,9 +11,33 @@ import {
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const parsed = registrationSchema.safeParse(body);
+    const formData = await request.formData();
 
+    const paymentValidation = validatePaymentFile(
+      formData.get("paymentScreenshot"),
+    );
+    if (!paymentValidation.ok) {
+      return NextResponse.json(
+        { error: paymentValidation.error },
+        { status: 400 },
+      );
+    }
+
+    const raw = {
+      fullName: formData.get("fullName"),
+      phone: formData.get("phone"),
+      age: formData.get("age"),
+      gender: formData.get("gender"),
+      maritalStatus: formData.get("maritalStatus"),
+      occupation: formData.get("occupation"),
+      address: formData.get("address"),
+      churchName: formData.get("churchName"),
+      parishName: formData.get("parishName"),
+      ministryArea: formData.get("ministryArea"),
+      needsAccommodation: formData.get("needsAccommodation") === "true",
+    };
+
+    const parsed = registrationSchema.safeParse(raw);
     if (!parsed.success) {
       const details: Record<string, string[]> = {};
       for (const issue of parsed.error.issues) {
@@ -37,6 +65,17 @@ export async function POST(request: Request) {
       );
     }
 
+    let paymentScreenshot: string;
+    try {
+      paymentScreenshot = await uploadPaymentScreenshot(paymentValidation.file);
+    } catch (uploadError) {
+      console.error("Cloudinary upload error:", uploadError);
+      return NextResponse.json(
+        { error: "የክፍያ ማረጋገጫ ፎቶ ማስገባት አልተሳካም። እባክዎ እንደገና ይሞክሩ።" },
+        { status: 502 },
+      );
+    }
+
     const participant = await prisma.participant.create({
       data: {
         fullName: data.fullName,
@@ -50,6 +89,7 @@ export async function POST(request: Request) {
         parishName: data.parishName,
         ministryArea: data.ministryArea,
         needsAccommodation: data.needsAccommodation,
+        paymentScreenshot,
       },
       select: {
         id: true,

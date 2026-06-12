@@ -50,6 +50,7 @@ export async function GET(request: Request) {
         parishName: true,
         ministryArea: true,
         needsAccommodation: true,
+        paymentScreenshot: true,
         status: true,
         createdAt: true,
       },
