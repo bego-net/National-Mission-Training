@@ -3,8 +3,8 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { getSession } from "@/lib/auth";
 
 export const metadata = {
-  title: "ዳሽቦርድ | HGM አስተዳዳሪ",
-  description: "የምዝገባ አስተዳደር ዳሽቦርድ",
+  title: "Dashboard | HGM Admin",
+  description: "Registration Management Dashboard",
 };
 
 export default async function AdminPage() {
