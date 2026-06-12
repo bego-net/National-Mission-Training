@@ -40,6 +40,8 @@ model Participant {
   needsAccommodation Boolean            @default(false)
   paymentScreenshot  String             @default("")
   status             RegistrationStatus @default(PENDING)
+  registrationNumber String?            @unique
+  qrCode             String?
   createdAt          DateTime           @default(now())
 
   @@index([status])
