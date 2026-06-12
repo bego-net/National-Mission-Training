@@ -3,12 +3,18 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Gender, MaritalStatus, RegistrationStatus } from "@prisma/client";
+import { ReceiptModal } from "@/components/admin/ReceiptModal";
 import { StatusBadge } from "@/components/admin/StatusBadge";
+import { StatusConfirmDialog } from "@/components/admin/StatusConfirmDialog";
 import {
+  ALL_REGISTRATION_STATUSES,
   genderLabels,
   maritalStatusLabels,
+  statusActionLabels,
+  statusActionStyles,
   statusLabels,
 } from "@/lib/labels";
+import { hasPaymentScreenshot, isPdfUrl } from "@/lib/validations/payment";
 
 type Registration = {
   id: string;
@@ -23,6 +29,7 @@ type Registration = {
   parishName: string;
   ministryArea: string;
   needsAccommodation: boolean;
+  paymentScreenshot: string;
   status: RegistrationStatus;
   createdAt: string;
 };
@@ -36,6 +43,18 @@ type Counts = {
 
 type AdminDashboardProps = {
   username: string;
+};
+
+type ReceiptView = {
+  url: string;
+  participantName: string;
+};
+
+type PendingStatusChange = {
+  id: string;
+  participantName: string;
+  currentStatus: RegistrationStatus;
+  nextStatus: RegistrationStatus;
 };
 
 const statusFilters: { value: "" | RegistrationStatus; label: string }[] = [
@@ -60,6 +79,9 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
   const [error, setError] = useState("");
   const [actionId, setActionId] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [receiptView, setReceiptView] = useState<ReceiptView | null>(null);
+  const [pendingStatusChange, setPendingStatusChange] =
+    useState<PendingStatusChange | null>(null);
 
   const fetchRegistrations = useCallback(async () => {
     setIsLoading(true);
@@ -99,7 +121,10 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
     return () => clearTimeout(timer);
   }, [fetchRegistrations]);
 
-  async function handleStatusUpdate(id: string, status: "APPROVED" | "REJECTED") {
+  async function handleStatusUpdate(
+    id: string,
+    status: RegistrationStatus,
+  ): Promise<boolean> {
     setActionId(id);
     try {
       const response = await fetch(`/api/admin/registrations/${id}`, {
@@ -110,14 +135,29 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
 
       if (!response.ok) {
         setError("ሁኔታ ማዘመን አልተሳካም።");
-        return;
+        return false;
       }
 
       await fetchRegistrations();
+      return true;
     } catch {
       setError("የአውታረ መረብ ስህተት።");
+      return false;
     } finally {
       setActionId(null);
+    }
+  }
+
+  async function confirmStatusChange() {
+    if (!pendingStatusChange) return;
+
+    const success = await handleStatusUpdate(
+      pendingStatusChange.id,
+      pendingStatusChange.nextStatus,
+    );
+
+    if (success) {
+      setPendingStatusChange(null);
     }
   }
 
@@ -220,31 +260,69 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                       </p>
                     </div>
 
-                    {registration.status === "PENDING" && (
-                      <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
+                      {hasPaymentScreenshot(registration.paymentScreenshot) && (
                         <button
+                          type="button"
+                          onClick={() =>
+                            setReceiptView({
+                              url: registration.paymentScreenshot,
+                              participantName: registration.fullName,
+                            })
+                          }
+                          className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-medium text-blue-700 transition hover:bg-blue-100"
+                        >
+                          የክፍያ ማረጋገጫ ይመልከቱ
+                        </button>
+                      )}
+
+                      {ALL_REGISTRATION_STATUSES.filter(
+                        (status) => status !== registration.status,
+                      ).map((status) => (
+                        <button
+                          key={status}
                           type="button"
                           disabled={actionId === registration.id}
                           onClick={() =>
-                            void handleStatusUpdate(registration.id, "APPROVED")
+                            setPendingStatusChange({
+                              id: registration.id,
+                              participantName: registration.fullName,
+                              currentStatus: registration.status,
+                              nextStatus: status,
+                            })
                           }
-                          className="rounded-lg bg-green-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-green-700 disabled:opacity-60"
+                          className={`rounded-lg px-3 py-1.5 text-xs font-medium text-white transition disabled:opacity-60 ${statusActionStyles[status]}`}
                         >
-                          ፀድቅ
+                          {statusActionLabels[status]}
                         </button>
-                        <button
-                          type="button"
-                          disabled={actionId === registration.id}
-                          onClick={() =>
-                            void handleStatusUpdate(registration.id, "REJECTED")
-                          }
-                          className="rounded-lg bg-red-600 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-red-700 disabled:opacity-60"
-                        >
-                          አትቀበል
-                        </button>
-                      </div>
-                    )}
+                      ))}
+                    </div>
                   </div>
+
+                  {registration.status === "PENDING" &&
+                    hasPaymentScreenshot(registration.paymentScreenshot) && (
+                    <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+                      ክፍያውን ከመረጃው በኋላ ከማረጋገጥ በኋላ ሁኔታ ይቀይሩ።
+                    </div>
+                  )}
+
+                  {hasPaymentScreenshot(registration.paymentScreenshot) &&
+                    !isPdfUrl(registration.paymentScreenshot) && (
+                    <div className="mt-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={registration.paymentScreenshot}
+                        alt={`የክፍያ ማረጋገጫ - ${registration.fullName}`}
+                        className="h-20 w-auto max-w-full cursor-pointer rounded-lg border border-slate-200 object-cover transition hover:opacity-90"
+                        onClick={() =>
+                          setReceiptView({
+                            url: registration.paymentScreenshot,
+                            participantName: registration.fullName,
+                          })
+                        }
+                      />
+                    </div>
+                  )}
 
                   <button
                     type="button"
@@ -282,6 +360,25 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
           )}
         </div>
       </main>
+
+      {receiptView && (
+        <ReceiptModal
+          url={receiptView.url}
+          participantName={receiptView.participantName}
+          onClose={() => setReceiptView(null)}
+        />
+      )}
+
+      {pendingStatusChange && (
+        <StatusConfirmDialog
+          participantName={pendingStatusChange.participantName}
+          currentStatus={pendingStatusChange.currentStatus}
+          nextStatus={pendingStatusChange.nextStatus}
+          isLoading={actionId === pendingStatusChange.id}
+          onConfirm={() => void confirmStatusChange()}
+          onCancel={() => setPendingStatusChange(null)}
+        />
+      )}
     </div>
   );
 }
