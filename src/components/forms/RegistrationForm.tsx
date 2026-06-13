@@ -372,6 +372,25 @@ export function RegistrationForm() {
         </div>
       )}
 
+      {/* Validation Caution Banner — shown when fields have errors */}
+      {Object.keys(errors).length > 0 && (
+        <div className="flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3.5 animate-fade-in">
+          <svg className="h-5 w-5 shrink-0 text-amber-600 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div>
+            <p className="text-sm font-bold text-amber-800">
+              እባክዎ ቅጹን ያስተካክሉ
+            </p>
+            <p className="mt-0.5 text-xs text-amber-700">
+              {Object.keys(errors).length === 1
+                ? "1 ያልተሞላ ወይም ትክክል ያልሆነ መረጃ አለ። እባክዎ ከላይ ያረጋግጡ።"
+                : `${Object.keys(errors).length} ያልተሞሉ ወይም ትክክል ያልሆኑ መረጃዎች አሉ። እባክዎ ከላይ ያረጋግጡ።`}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Submit Button */}
       <button
         type="submit"

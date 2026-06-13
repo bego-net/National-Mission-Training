@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import QRCode from "qrcode";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { appendToGoogleSheets } from "@/lib/sheets";
 import { updateStatusSchema } from "@/lib/validations/auth";
 
 type RouteContext = {
@@ -29,7 +30,24 @@ export async function PATCH(request: Request, context: RouteContext) {
 
     const existing = await prisma.participant.findUnique({
       where: { id },
-      select: { id: true, status: true, registrationNumber: true, qrCode: true },
+      select: {
+        id: true,
+        fullName: true,
+        phone: true,
+        age: true,
+        gender: true,
+        maritalStatus: true,
+        occupation: true,
+        address: true,
+        churchName: true,
+        parishName: true,
+        ministryArea: true,
+        needsAccommodation: true,
+        status: true,
+        registrationNumber: true,
+        qrCode: true,
+        createdAt: true,
+      },
     });
 
     if (!existing) {
@@ -87,6 +105,30 @@ export async function PATCH(request: Request, context: RouteContext) {
         qrCode: true,
       },
     });
+
+    // Sync approved participant data to Google Sheets
+    if (nextStatus === "APPROVED" && updated.registrationNumber) {
+      try {
+        await appendToGoogleSheets([
+          updated.registrationNumber,
+          existing.fullName,
+          existing.phone,
+          String(existing.age),
+          existing.gender,
+          existing.maritalStatus,
+          existing.occupation,
+          existing.address,
+          existing.churchName,
+          existing.parishName,
+          existing.ministryArea,
+          existing.needsAccommodation ? "Yes" : "No",
+          "Approved",
+          existing.createdAt.toLocaleString("en-US"),
+        ]);
+      } catch (sheetError) {
+        console.error("Failed to append to Google Sheets on approval:", sheetError);
+      }
+    }
 
     return NextResponse.json(updated);
   } catch (error) {
