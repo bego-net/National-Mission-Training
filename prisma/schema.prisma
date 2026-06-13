@@ -42,10 +42,29 @@ model Participant {
   status             RegistrationStatus @default(PENDING)
   registrationNumber String?            @unique
   qrCode             String?
+  scannedEntry       Boolean            @default(false)
+  scannedLunch       Boolean            @default(false)
+  scannedEntryAt     DateTime?
+  scannedLunchAt     DateTime?
   createdAt          DateTime           @default(now())
+  scanLogs           ScanLog[]
 
   @@index([status])
   @@index([fullName])
   @@index([phone])
   @@index([createdAt])
+}
+
+model ScanLog {
+  id            String      @id @default(uuid())
+  participantId String
+  checkpoint    String
+  scannedAt     DateTime    @default(now())
+  scannedBy     String?
+
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@index([participantId])
+  @@index([checkpoint])
+  @@index([scannedAt])
 }
