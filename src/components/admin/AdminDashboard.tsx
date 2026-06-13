@@ -316,6 +316,7 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                 borderClass="border-rose-100/80"
                 textClass="text-rose-950"
                 iconBg="bg-rose-50 text-rose-600"
+                className="col-span-2 sm:col-span-1"
               />
             </div>
 
@@ -826,6 +827,7 @@ function StatCard({
   borderClass,
   textClass,
   iconBg,
+  className = "",
 }: {
   label: string;
   value: number | string;
@@ -834,9 +836,10 @@ function StatCard({
   borderClass: string;
   textClass: string;
   iconBg: string;
+  className?: string;
 }) {
   return (
-    <div className={`rounded-2xl border ${borderClass} ${bgClass} p-5 shadow-sm transition-all duration-300 hover:shadow-md`}>
+    <div className={`rounded-2xl border ${borderClass} ${bgClass} p-5 shadow-sm transition-all duration-300 hover:shadow-md ${className}`}>
       <div className="flex items-center justify-between">
         <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">{label}</span>
         <span className={`flex h-8 w-8 items-center justify-center rounded-xl ${iconBg} text-sm shadow-sm`}>

@@ -1,16 +1,12 @@
 import Link from "next/link";
 
-type PageHeaderProps = {
+export type PageHeaderProps = {
   showRegisterLink?: boolean;
   maxWidth?: "3xl" | "5xl" | "7xl";
 };
 
 export function PageHeader({ showRegisterLink = false, maxWidth = "3xl" }: PageHeaderProps) {
-  const widthClasses = {
-    "3xl": "max-w-3xl",
-    "5xl": "max-w-5xl",
-    "7xl": "max-w-7xl",
-  }[maxWidth];
+  const widthClasses = maxWidth === "5xl" ? "max-w-5xl" : maxWidth === "7xl" ? "max-w-7xl" : "max-w-3xl";
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/50 bg-white/80 backdrop-blur-md">
