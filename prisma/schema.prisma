@@ -66,4 +66,5 @@ model ScanLog {
   @@index([checkpoint])
   @@index([scannedAt])
   @@index([scanDate])
+  @@index([scanDate, checkpoint])
 }

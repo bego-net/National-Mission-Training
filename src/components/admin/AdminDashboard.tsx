@@ -52,29 +52,17 @@ type Counts = {
   todayDate?: string;
 };
 
-type ScanLog = {
-  id: string;
-  checkpoint: "ENTRY" | "LUNCH";
-  scanDate: string;
-  scannedAt: string;
-  participant: {
-    fullName: string;
-    registrationNumber: string;
-  };
-};
-
-type AttendanceDayParticipant = {
-  fullName: string;
-  registrationNumber: string;
-  entryTime: string | null;
-  lunchTime: string | null;
-};
-
 type AttendanceDay = {
   date: string;
   entryCount: number;
   lunchCount: number;
-  participants: AttendanceDayParticipant[];
+};
+
+type Pagination = {
+  page: number;
+  limit: number;
+  totalCount: number;
+  totalPages: number;
 };
 
 type AdminDashboardProps = {
@@ -123,18 +111,21 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
     useState<PendingStatusChange | null>(null);
   const [badgeView, setBadgeView] = useState<Registration | null>(null);
   const [activeTab, setActiveTab] = useState<"dashboard" | "registrations" | "attendance">("dashboard");
-  const [scanLogs, setScanLogs] = useState<ScanLog[]>([]);
   const [attendanceDays, setAttendanceDays] = useState<AttendanceDay[]>([]);
   const [attendanceLoading, setAttendanceLoading] = useState(false);
   const [attendanceFetched, setAttendanceFetched] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState<Pagination>({ page: 1, limit: 50, totalCount: 0, totalPages: 1 });
 
-  const fetchRegistrations = useCallback(async () => {
+  const fetchRegistrations = useCallback(async (page = 1) => {
     setIsLoading(true);
     setError("");
     try {
       const params = new URLSearchParams();
       if (search.trim()) params.set("q", search.trim());
       if (statusFilter) params.set("status", statusFilter);
+      params.set("page", String(page));
+      params.set("limit", "50");
 
       const response = await fetch(`/api/admin/registrations?${params.toString()}`);
       if (response.status === 401) {
@@ -149,11 +140,12 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
       const data = (await response.json()) as {
         registrations: Registration[];
         counts: Counts;
-        scanLogs: ScanLog[];
+        pagination: Pagination;
       };
       setRegistrations(data.registrations);
       setCounts(data.counts);
-      setScanLogs(data.scanLogs || []);
+      setPagination(data.pagination);
+      setCurrentPage(data.pagination.page);
     } catch {
       setError("Network error.");
     } finally {
@@ -163,7 +155,8 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      void fetchRegistrations();
+      setCurrentPage(1);
+      void fetchRegistrations(1);
     }, 300);
     return () => clearTimeout(timer);
   }, [fetchRegistrations]);
@@ -764,6 +757,77 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                   </article>
                 );
               })}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {pagination.totalPages > 1 && (
+            <div className="flex flex-col items-center gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:justify-between">
+              <p className="text-xs text-slate-500 font-medium">
+                Showing{" "}
+                <span className="font-bold text-slate-700">
+                  {(currentPage - 1) * pagination.limit + 1}–
+                  {Math.min(currentPage * pagination.limit, pagination.totalCount)}
+                </span>{" "}
+                of <span className="font-bold text-slate-700">{pagination.totalCount}</span> registrations
+              </p>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  disabled={currentPage <= 1 || isLoading}
+                  onClick={() => void fetchRegistrations(currentPage - 1)}
+                  className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Prev
+                </button>
+
+                {/* Page number pills — show at most 5 around current */}
+                {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
+                  .filter((p) =>
+                    p === 1 ||
+                    p === pagination.totalPages ||
+                    Math.abs(p - currentPage) <= 1
+                  )
+                  .reduce<(number | "…")[]>((acc, p, idx, arr) => {
+                    if (idx > 0 && p - (arr[idx - 1] as number) > 1) acc.push("…");
+                    acc.push(p);
+                    return acc;
+                  }, [])
+                  .map((item, idx) =>
+                    item === "…" ? (
+                      <span key={`ellipsis-${idx}`} className="px-1 text-xs text-slate-400">…</span>
+                    ) : (
+                      <button
+                        key={item}
+                        type="button"
+                        disabled={isLoading}
+                        onClick={() => void fetchRegistrations(item as number)}
+                        className={`h-7 w-7 rounded-xl text-xs font-extrabold transition ${
+                          item === currentPage
+                            ? "bg-indigo-600 text-white shadow-sm"
+                            : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                        }`}
+                      >
+                        {item}
+                      </button>
+                    )
+                  )}
+
+                <button
+                  type="button"
+                  disabled={currentPage >= pagination.totalPages || isLoading}
+                  onClick={() => void fetchRegistrations(currentPage + 1)}
+                  className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  Next
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
             </div>
           )}
         </div>

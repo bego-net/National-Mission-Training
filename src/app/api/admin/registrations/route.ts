@@ -3,9 +3,6 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
-/**
- * Get today's date as YYYY-MM-DD in the server's local timezone.
- */
 function getTodayDateString(): string {
   const now = new Date();
   const year = now.getFullYear();
@@ -13,6 +10,9 @@ function getTodayDateString(): string {
   const day = String(now.getDate()).padStart(2, "0");
   return `${year}-${month}-${day}`;
 }
+
+const MAX_PAGE_SIZE = 100;
+const DEFAULT_PAGE_SIZE = 50;
 
 export async function GET(request: Request) {
   const session = await getSession();
@@ -23,6 +23,11 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q")?.trim() ?? "";
   const statusParam = searchParams.get("status");
+  const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10) || 1);
+  const limit = Math.min(
+    MAX_PAGE_SIZE,
+    Math.max(1, parseInt(searchParams.get("limit") || String(DEFAULT_PAGE_SIZE), 10) || DEFAULT_PAGE_SIZE)
+  );
 
   const validStatuses: RegistrationStatus[] = ["PENDING", "APPROVED", "REJECTED"];
   const status =
@@ -39,17 +44,21 @@ export async function GET(request: Request) {
             { phone: { contains: q } },
             { churchName: { contains: q, mode: "insensitive" as const } },
             { parishName: { contains: q, mode: "insensitive" as const } },
+            { registrationNumber: { contains: q, mode: "insensitive" as const } },
           ],
         }
       : {}),
   };
 
   const todayDate = getTodayDateString();
+  const skip = (page - 1) * limit;
 
-  const [registrations, stats, todayEntryCount, todayLunchCount, scanLogs] = await Promise.all([
+  const [registrations, totalCount, stats, todayEntryCount, todayLunchCount] = await Promise.all([
     prisma.participant.findMany({
       where,
       orderBy: { createdAt: "desc" },
+      skip,
+      take: limit,
       select: {
         id: true,
         fullName: true,
@@ -66,7 +75,7 @@ export async function GET(request: Request) {
         paymentScreenshot: true,
         status: true,
         registrationNumber: true,
-        qrCode: true,
+        // qrCode excluded from list — only fetched in detail/badge views
         createdAt: true,
         scanLogs: {
           where: { scanDate: todayDate },
@@ -77,33 +86,16 @@ export async function GET(request: Request) {
         },
       },
     }),
+    prisma.participant.count({ where }),
     prisma.participant.groupBy({
       by: ["status"],
       _count: { status: true },
     }),
-    // Count distinct participants who scanned ENTRY today
     prisma.scanLog.count({
       where: { checkpoint: "ENTRY", scanDate: todayDate },
     }),
-    // Count distinct participants who scanned LUNCH today
     prisma.scanLog.count({
       where: { checkpoint: "LUNCH", scanDate: todayDate },
-    }),
-    prisma.scanLog.findMany({
-      orderBy: { scannedAt: "desc" },
-      take: 20,
-      select: {
-        id: true,
-        checkpoint: true,
-        scanDate: true,
-        scannedAt: true,
-        participant: {
-          select: {
-            fullName: true,
-            registrationNumber: true,
-          },
-        },
-      },
     }),
   ]);
 
@@ -127,13 +119,12 @@ export async function GET(request: Request) {
     ? Math.round((counts.scannedEntry / counts.APPROVED) * 100)
     : 0;
 
-  // Map registrations to include today's scan status
   const mappedRegistrations = registrations.map((reg) => {
     const todayEntry = reg.scanLogs.find((l) => l.checkpoint === "ENTRY");
     const todayLunch = reg.scanLogs.find((l) => l.checkpoint === "LUNCH");
     return {
       ...reg,
-      scanLogs: undefined, // remove raw scanLogs from response
+      scanLogs: undefined,
       scannedEntry: !!todayEntry,
       scannedLunch: !!todayLunch,
       scannedEntryAt: todayEntry?.scannedAt ?? null,
@@ -141,5 +132,14 @@ export async function GET(request: Request) {
     };
   });
 
-  return NextResponse.json({ registrations: mappedRegistrations, counts, scanLogs });
+  return NextResponse.json({
+    registrations: mappedRegistrations,
+    counts,
+    pagination: {
+      page,
+      limit,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+    },
+  });
 }
