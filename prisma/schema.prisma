@@ -42,10 +42,6 @@ model Participant {
   status             RegistrationStatus @default(PENDING)
   registrationNumber String?            @unique
   qrCode             String?
-  scannedEntry       Boolean            @default(false)
-  scannedLunch       Boolean            @default(false)
-  scannedEntryAt     DateTime?
-  scannedLunchAt     DateTime?
   createdAt          DateTime           @default(now())
   scanLogs           ScanLog[]
 
@@ -59,12 +55,15 @@ model ScanLog {
   id            String      @id @default(uuid())
   participantId String
   checkpoint    String
+  scanDate      String      // YYYY-MM-DD date string for per-day deduplication
   scannedAt     DateTime    @default(now())
   scannedBy     String?
 
   participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
 
+  @@unique([participantId, checkpoint, scanDate])
   @@index([participantId])
   @@index([checkpoint])
   @@index([scannedAt])
+  @@index([scanDate])
 }
