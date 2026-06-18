@@ -49,16 +49,32 @@ type Counts = {
   scannedEntry: number;
   scannedLunch: number;
   attendanceRate: number;
+  todayDate?: string;
 };
 
 type ScanLog = {
   id: string;
   checkpoint: "ENTRY" | "LUNCH";
+  scanDate: string;
   scannedAt: string;
   participant: {
     fullName: string;
     registrationNumber: string;
   };
+};
+
+type AttendanceDayParticipant = {
+  fullName: string;
+  registrationNumber: string;
+  entryTime: string | null;
+  lunchTime: string | null;
+};
+
+type AttendanceDay = {
+  date: string;
+  entryCount: number;
+  lunchCount: number;
+  participants: AttendanceDayParticipant[];
 };
 
 type AdminDashboardProps = {
@@ -108,6 +124,9 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
   const [badgeView, setBadgeView] = useState<Registration | null>(null);
   const [activeTab, setActiveTab] = useState<"dashboard" | "registrations" | "attendance">("dashboard");
   const [scanLogs, setScanLogs] = useState<ScanLog[]>([]);
+  const [attendanceDays, setAttendanceDays] = useState<AttendanceDay[]>([]);
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
+  const [attendanceFetched, setAttendanceFetched] = useState(false);
 
   const fetchRegistrations = useCallback(async () => {
     setIsLoading(true);
@@ -202,7 +221,113 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
     }).format(new Date(date));
   }
 
+  const fetchAttendance = useCallback(async () => {
+    setAttendanceLoading(true);
+    try {
+      const response = await fetch("/api/admin/attendance");
+      if (response.status === 401) {
+        router.push("/admin/login");
+        return;
+      }
+      if (!response.ok) return;
+      const data = (await response.json()) as { days: AttendanceDay[] };
+      setAttendanceDays(data.days);
+      setAttendanceFetched(true);
+    } catch {
+      // silent
+    } finally {
+      setAttendanceLoading(false);
+    }
+  }, [router]);
 
+  useEffect(() => {
+    if (activeTab === "attendance" && !attendanceFetched) {
+      void fetchAttendance();
+    }
+  }, [activeTab, attendanceFetched, fetchAttendance]);
+
+  function formatTimeOnly(timeString: string) {
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    }).format(new Date(timeString));
+  }
+
+  function formatDayLabel(dateStr: string) {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    return new Intl.DateTimeFormat("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(year, month - 1, day));
+  }
+
+  function handleDownload(date: string, format: "csv" | "xlsx") {
+    window.open(`/api/admin/attendance/download?date=${date}&format=${format}`, "_blank");
+  }
+
+  function printAllApprovedBadges(regs: Registration[]) {
+    const approved = regs.filter((r) => r.status === "APPROVED");
+    if (approved.length === 0) return;
+
+    const badgeHTML = (r: Registration) => `
+      <div class="badge">
+        <div class="badge-header">
+          <div class="title">ስምህ ይቀደስ</div>
+          <div class="subtitle">National Mission Training</div>
+        </div>
+        <div class="badge-body">
+          <div class="name">${r.fullName}</div>
+          <div class="church">${r.churchName}</div>
+          ${r.qrCode ? `<div class="qr-wrap"><img class="qr" src="${r.qrCode}" alt="QR" /></div>` : ""}
+          ${r.registrationNumber ? `<div class="reg">${r.registrationNumber}</div>` : ""}
+        </div>
+        <div class="badge-footer">HOSSANA GOSPEL MOVEMENT (HGM)</div>
+      </div>`;
+
+    const pw = window.open("", "_blank");
+    if (!pw) return;
+
+    pw.document.write(`<!DOCTYPE html><html><head><title>All Badges – Print</title>
+    <style>
+      @page { size: A4 landscape; margin: 10mm; }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: system-ui, -apple-system, sans-serif; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8mm; width: 100%; height: 100vh; page-break-after: always; }
+      .grid:last-child { page-break-after: auto; }
+      .badge { display: flex; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; background: #fff; height: 100%; }
+      .badge-header { background: linear-gradient(135deg,#1e3a8a,#3730a3); color: #fff; text-align: center; padding: 10px 8px; }
+      .title { font-size: 18px; font-weight: 800; }
+      .subtitle { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: .85; margin-top: 2px; }
+      .badge-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; text-align: center; gap: 4px; }
+      .name { font-size: 15px; font-weight: 800; color: #0f172a; line-height: 1.2; }
+      .church { font-size: 10px; font-weight: 600; color: #475569; }
+      .qr-wrap { margin: 6px 0; border: 1px solid #f1f5f9; border-radius: 6px; padding: 3px; background: #fff; }
+      .qr { width: 80px; height: 80px; display: block; }
+      .reg { font-family: monospace; font-size: 10px; font-weight: 700; color: #1e3a8a; background: #eff6ff; border: 1px solid #dbeafe; padding: 2px 8px; border-radius: 4px; }
+      .badge-footer { text-align: center; padding: 6px; border-top: 1px solid #f1f5f9; background: #fafafa; font-size: 7px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .5px; }
+    </style></head><body>`);
+
+    // Group into pages of 4
+    for (let i = 0; i < approved.length; i += 4) {
+      const page = approved.slice(i, i + 4);
+      pw.document.write(`<div class="grid">${page.map(badgeHTML).join("")}</div>`);
+    }
+
+    pw.document.write(`<script>
+      window.onload = function() {
+        var imgs = document.getElementsByTagName('img');
+        var total = imgs.length, loaded = 0;
+        function tryPrint() { if (++loaded >= total) { setTimeout(function(){ window.print(); setTimeout(function(){ window.close(); }, 500); }, 300); } }
+        if (total === 0) { setTimeout(function(){ window.print(); setTimeout(function(){ window.close(); }, 500); }, 300); }
+        else { for (var i = 0; i < imgs.length; i++) { if (imgs[i].complete) tryPrint(); else { imgs[i].addEventListener('load', tryPrint); imgs[i].addEventListener('error', tryPrint); } } }
+      };
+    <\/script></body></html>`);
+    pw.document.close();
+  }
 
   return (
     <div className="min-h-full bg-slate-50/60 pb-12">
@@ -291,7 +416,7 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                 iconBg="bg-emerald-50 text-emerald-600"
               />
               <StatCard
-                label="Checked In (Gate)"
+                label="Checked In Today (Gate)"
                 value={counts.scannedEntry}
                 icon="🚪"
                 bgClass="bg-gradient-to-br from-blue-50/30 to-white"
@@ -300,7 +425,7 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                 iconBg="bg-blue-50 text-blue-600"
               />
               <StatCard
-                label="Lunch Scanned"
+                label="Lunch Scanned Today"
                 value={counts.scannedLunch}
                 icon="🍽️"
                 bgClass="bg-gradient-to-br from-amber-50/30 to-white"
@@ -309,7 +434,7 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                 iconBg="bg-amber-50 text-amber-600"
               />
               <StatCard
-                label="Attendance Rate"
+                label="Today's Attendance Rate"
                 value={`${counts.attendanceRate}%`}
                 icon="📈"
                 bgClass="bg-gradient-to-br from-rose-50/30 to-white"
@@ -320,96 +445,30 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
               />
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3">
-              {/* Status breakdown chart bars */}
-              <div className="rounded-[24px] border border-slate-200/60 bg-white p-5 shadow-sm md:col-span-1">
-                <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">Registration Statuses</h3>
-                <div className="mt-4 space-y-4 text-xs font-bold">
-                  <div>
-                    <div className="flex justify-between text-slate-500 mb-1">
-                      <span>Pending Approval</span>
-                      <span className="text-amber-600">{counts.PENDING}</span>
-                    </div>
-                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-amber-500 transition-all duration-500"
-                        style={{ width: `${counts.TOTAL > 0 ? (counts.PENDING / counts.TOTAL) * 100 : 0}%` }}
-                      />
-                    </div>
+            {/* Status breakdown */}
+            <div className="rounded-2xl border border-slate-200/60 bg-white p-5 shadow-sm">
+              <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-4">Registration Breakdown</h3>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="w-24 text-xs font-bold text-slate-500">Pending</span>
+                  <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-amber-400 rounded-full transition-all duration-700" style={{ width: `${counts.TOTAL > 0 ? (counts.PENDING / counts.TOTAL) * 100 : 0}%` }} />
                   </div>
-                  <div>
-                    <div className="flex justify-between text-slate-500 mb-1">
-                      <span>Approved</span>
-                      <span className="text-emerald-600">{counts.APPROVED}</span>
-                    </div>
-                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-emerald-500 transition-all duration-500"
-                        style={{ width: `${counts.TOTAL > 0 ? (counts.APPROVED / counts.TOTAL) * 100 : 0}%` }}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-slate-500 mb-1">
-                      <span>Rejected</span>
-                      <span className="text-rose-600">{counts.REJECTED}</span>
-                    </div>
-                    <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-rose-500 transition-all duration-500"
-                        style={{ width: `${counts.TOTAL > 0 ? (counts.REJECTED / counts.TOTAL) * 100 : 0}%` }}
-                      />
-                    </div>
-                  </div>
+                  <span className="w-8 text-right text-xs font-extrabold text-amber-600">{counts.PENDING}</span>
                 </div>
-              </div>
-
-              {/* Live Activity Feed */}
-              <div className="rounded-[24px] border border-slate-200/60 bg-white p-5 shadow-sm md:col-span-2">
-                <h3 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3">
-                  🛰️ Live Attendance Log (Recent Scans)
-                </h3>
-                <div className="mt-4 overflow-hidden">
-                  {scanLogs.length === 0 ? (
-                    <div className="py-8 text-center text-xs text-slate-400 font-semibold">
-                      No scan records registered yet.
-                    </div>
-                  ) : (
-                    <div className="flow-root">
-                      <ul className="-my-4 divide-y divide-slate-100">
-                        {scanLogs.map((log) => (
-                          <li key={log.id} className="py-3 flex items-center justify-between">
-                            <div className="min-w-0 flex-1">
-                              <p className="text-xs font-bold text-slate-900 truncate">
-                                {log.participant?.fullName || "Unknown Participant"}
-                              </p>
-                              <p className="text-[10px] font-mono text-slate-500 mt-0.5">
-                                {log.participant?.registrationNumber || "N/A"}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-3 ml-4">
-                              <span
-                                className={`inline-flex items-center rounded-lg px-2 py-0.5 text-[9px] font-black uppercase tracking-wider ${
-                                  log.checkpoint === "ENTRY"
-                                    ? "bg-blue-50 text-blue-700 border border-blue-100"
-                                    : "bg-amber-50 text-amber-700 border border-amber-100"
-                                }`}
-                              >
-                                {log.checkpoint}
-                              </span>
-                              <span className="text-[10px] text-slate-400 font-medium">
-                                {new Intl.DateTimeFormat("en-US", {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                }).format(new Date(log.scannedAt))}
-                              </span>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                <div className="flex items-center gap-3">
+                  <span className="w-24 text-xs font-bold text-slate-500">Approved</span>
+                  <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 rounded-full transition-all duration-700" style={{ width: `${counts.TOTAL > 0 ? (counts.APPROVED / counts.TOTAL) * 100 : 0}%` }} />
+                  </div>
+                  <span className="w-8 text-right text-xs font-extrabold text-emerald-600">{counts.APPROVED}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="w-24 text-xs font-bold text-slate-500">Rejected</span>
+                  <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-full bg-rose-500 rounded-full transition-all duration-700" style={{ width: `${counts.TOTAL > 0 ? (counts.REJECTED / counts.TOTAL) * 100 : 0}%` }} />
+                  </div>
+                  <span className="w-8 text-right text-xs font-extrabold text-rose-600">{counts.REJECTED}</span>
                 </div>
               </div>
             </div>
@@ -430,6 +489,18 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
             </div>
             
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <button
+                type="button"
+                onClick={() => printAllApprovedBadges(registrations)}
+                disabled={registrations.filter(r => r.status === "APPROVED").length === 0}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/60 px-3 py-2 text-xs font-bold text-indigo-700 transition hover:bg-indigo-100 hover:border-indigo-300 disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                Print All Approved ({registrations.filter(r => r.status === "APPROVED").length})
+              </button>
+
               {/* Tab Selector capsule group */}
               <div className="inline-flex rounded-xl bg-slate-100/80 p-1">
                 {statusFilters.map((filter) => {
@@ -670,19 +741,19 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
                                 value={registration.needsAccommodation ? "Yes" : "No"}
                               />
                               <Detail
-                                label="Gate Entry Checked"
+                                label="Gate Entry Today"
                                 value={
                                   registration.scannedEntry
                                     ? `Yes (at ${formatDate(registration.scannedEntryAt!)})`
-                                    : "No"
+                                    : "Not yet"
                                 }
                               />
                               <Detail
-                                label="Lunch Claimed"
+                                label="Lunch Today"
                                 value={
                                   registration.scannedLunch
                                     ? `Yes (at ${formatDate(registration.scannedLunchAt!)})`
-                                    : "No"
+                                    : "Not yet"
                                 }
                               />
                             </dl>
@@ -699,93 +770,79 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
         )}
 
         {activeTab === "attendance" && (
-          <div className="rounded-[24px] border border-slate-200/60 bg-white p-5 shadow-sm sm:p-7">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-5">
+          <div className="space-y-6">
+            {/* Page header */}
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
-                  Attendance Records
-                  <span className="inline-flex items-center justify-center rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-extrabold text-blue-700">
-                    {registrations.filter(r => r.status === "APPROVED").length} Approved
+                  Attendance by Day
+                  <span className="inline-flex items-center justify-center rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-extrabold text-indigo-700">
+                    {attendanceDays.length} {attendanceDays.length === 1 ? "Day" : "Days"}
                   </span>
                 </h2>
-                <p className="text-xs text-slate-500 mt-0.5">Track gate entries and lunch claims for approved participants</p>
+                <p className="text-xs text-slate-500 mt-0.5">Per-day tracking — only days with scan activity are shown</p>
               </div>
+              <button
+                type="button"
+                onClick={() => { setAttendanceFetched(false); void fetchAttendance(); }}
+                disabled={attendanceLoading}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 disabled:opacity-60"
+              >
+                <svg className={`h-3.5 w-3.5 ${attendanceLoading ? "animate-spin" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Refresh
+              </button>
             </div>
 
-            {/* Attendance Table */}
-            <div className="mt-6 overflow-x-auto">
-              <table className="w-full text-left border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                    <th className="py-3 px-4">Participant</th>
-                    <th className="py-3 px-4">Reg Number</th>
-                    <th className="py-3 px-4">Church</th>
-                    <th className="py-3 px-4">Gate Check-in</th>
-                    <th className="py-3 px-4">Lunch Claimed</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50 text-xs font-semibold">
-                  {registrations
-                    .filter((r) => r.status === "APPROVED")
-                    .map((registration) => (
-                      <tr key={registration.id} className="hover:bg-slate-50/50 transition border-b border-slate-50/60">
-                        <td className="py-3.5 px-4 font-bold text-slate-900">
-                          {registration.fullName}
-                        </td>
-                        <td className="py-3.5 px-4 font-mono text-slate-600">
-                          {registration.registrationNumber || "Pending"}
-                        </td>
-                        <td className="py-3.5 px-4 text-slate-500">
-                          {registration.churchName}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          {registration.scannedEntry ? (
-                            <div className="flex flex-col">
-                              <span className="inline-flex w-fit items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700 border border-emerald-100">
-                                ✓ Checked In
-                              </span>
-                              {registration.scannedEntryAt && (
-                                <span className="text-[9px] text-slate-400 mt-0.5">
-                                  {formatDate(registration.scannedEntryAt)}
-                                </span>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-                              Pending
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3.5 px-4">
-                          {registration.scannedLunch ? (
-                            <div className="flex flex-col">
-                              <span className="inline-flex w-fit items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-black text-emerald-700 border border-emerald-100">
-                                ✓ Claimed
-                              </span>
-                              {registration.scannedLunchAt && (
-                                <span className="text-[9px] text-slate-400 mt-0.5">
-                                  {formatDate(registration.scannedLunchAt)}
-                                </span>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
-                              Pending
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  {registrations.filter((r) => r.status === "APPROVED").length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="py-8 text-center text-slate-400">
-                        No approved participants to display.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            {attendanceLoading && !attendanceFetched && (
+              <div className="rounded-[24px] border border-slate-200/60 bg-white p-12 shadow-sm text-center">
+                <svg className="animate-spin h-6 w-6 text-indigo-500 mx-auto mb-3" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <p className="text-sm font-semibold text-slate-500">Loading attendance data...</p>
+              </div>
+            )}
+
+            {!attendanceLoading && attendanceFetched && attendanceDays.length === 0 && (
+              <div className="rounded-[24px] border border-slate-200/60 bg-white p-12 shadow-sm text-center">
+                <span className="text-3xl block mb-3">📋</span>
+                <p className="text-sm font-semibold text-slate-500">No attendance records found yet.</p>
+                <p className="text-xs text-slate-400 mt-1">Scan participant QR codes to start recording attendance.</p>
+              </div>
+            )}
+
+            {/* Day Cards */}
+            {attendanceDays.map((day) => (
+              <div key={day.date} className="rounded-2xl border border-slate-200/60 bg-white shadow-sm px-5 py-4 sm:px-6 sm:py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                    📅 {formatDayLabel(day.date)}
+                  </h3>
+                  <p className="text-[10px] font-mono text-slate-400 mt-0.5">{day.date}</p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-blue-50 border border-blue-100 px-3 py-1.5 text-[11px] font-extrabold text-blue-700">
+                    🚪 {day.entryCount} Entry
+                  </span>
+                  <span className="inline-flex items-center gap-1.5 rounded-xl bg-amber-50 border border-amber-100 px-3 py-1.5 text-[11px] font-extrabold text-amber-700">
+                    🍽️ {day.lunchCount} Lunch
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleDownload(day.date, "xlsx")}
+                    className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50/60 px-3 py-1.5 text-[11px] font-bold text-emerald-700 transition hover:bg-emerald-100 hover:border-emerald-300"
+                  >
+                    <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download Excel
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </main>
