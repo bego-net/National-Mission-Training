@@ -1,6 +1,18 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+/**
+ * Get today's date as YYYY-MM-DD in the server's local timezone.
+ * Used as the deduplication key for per-day scan validation.
+ */
+function getTodayDateString(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -43,109 +55,24 @@ export async function POST(request: Request) {
     }
 
     const now = new Date();
+    const todayDate = getTodayDateString();
 
-    if (checkpoint === "ENTRY") {
-      // Concurrency-safe atomic check and update
-      const updateResult = await prisma.participant.updateMany({
-        where: {
-          id: participant.id,
-          scannedEntry: false,
-        },
-        data: {
-          scannedEntry: true,
-          scannedEntryAt: now,
-        },
-      });
-
-      if (updateResult.count === 0) {
-        // Fetch existing scan timestamp
-        const existingParticipant = await prisma.participant.findUnique({
-          where: { id: participant.id },
-          select: { scannedEntryAt: true },
-        });
-
-        return NextResponse.json({
-          status: "ALREADY_SCANNED",
-          checkpoint: "ENTRY",
-          scannedAt: existingParticipant?.scannedEntryAt || now,
-          participant: {
-            id: participant.id,
-            fullName: participant.fullName,
-            churchName: participant.churchName,
-            registrationNumber: participant.registrationNumber,
-          },
-        });
-      }
-
-      // Record ScanLog
-      await prisma.scanLog.create({
-        data: {
+    // Check if this participant already scanned this checkpoint TODAY
+    const existingScan = await prisma.scanLog.findUnique({
+      where: {
+        participantId_checkpoint_scanDate: {
           participantId: participant.id,
-          checkpoint: "ENTRY",
-          scannedAt: now,
-          scannedBy: request.headers.get("user-agent") || "Scanner WebApp",
+          checkpoint,
+          scanDate: todayDate,
         },
-      });
+      },
+    });
 
+    if (existingScan) {
       return NextResponse.json({
-        status: "SUCCESS",
-        checkpoint: "ENTRY",
-        scannedAt: now,
-        participant: {
-          id: participant.id,
-          fullName: participant.fullName,
-          churchName: participant.churchName,
-          registrationNumber: participant.registrationNumber,
-        },
-      });
-    } else {
-      // LUNCH Checkpoint
-      // Concurrency-safe atomic check and update
-      const updateResult = await prisma.participant.updateMany({
-        where: {
-          id: participant.id,
-          scannedLunch: false,
-        },
-        data: {
-          scannedLunch: true,
-          scannedLunchAt: now,
-        },
-      });
-
-      if (updateResult.count === 0) {
-        // Fetch existing scan timestamp
-        const existingParticipant = await prisma.participant.findUnique({
-          where: { id: participant.id },
-          select: { scannedLunchAt: true },
-        });
-
-        return NextResponse.json({
-          status: "ALREADY_SCANNED",
-          checkpoint: "LUNCH",
-          scannedAt: existingParticipant?.scannedLunchAt || now,
-          participant: {
-            id: participant.id,
-            fullName: participant.fullName,
-            churchName: participant.churchName,
-            registrationNumber: participant.registrationNumber,
-          },
-        });
-      }
-
-      // Record ScanLog
-      await prisma.scanLog.create({
-        data: {
-          participantId: participant.id,
-          checkpoint: "LUNCH",
-          scannedAt: now,
-          scannedBy: request.headers.get("user-agent") || "Scanner WebApp",
-        },
-      });
-
-      return NextResponse.json({
-        status: "SUCCESS",
-        checkpoint: "LUNCH",
-        scannedAt: now,
+        status: "ALREADY_SCANNED",
+        checkpoint,
+        scannedAt: existingScan.scannedAt,
         participant: {
           id: participant.id,
           fullName: participant.fullName,
@@ -154,6 +81,29 @@ export async function POST(request: Request) {
         },
       });
     }
+
+    // Record new ScanLog for today
+    await prisma.scanLog.create({
+      data: {
+        participantId: participant.id,
+        checkpoint,
+        scanDate: todayDate,
+        scannedAt: now,
+        scannedBy: request.headers.get("user-agent") || "Scanner WebApp",
+      },
+    });
+
+    return NextResponse.json({
+      status: "SUCCESS",
+      checkpoint,
+      scannedAt: now,
+      participant: {
+        id: participant.id,
+        fullName: participant.fullName,
+        churchName: participant.churchName,
+        registrationNumber: participant.registrationNumber,
+      },
+    });
   } catch (error) {
     console.error("Scan error:", error);
     return NextResponse.json(

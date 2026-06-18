@@ -2,6 +2,18 @@ import { type RegistrationStatus } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+
+/**
+ * Get today's date as YYYY-MM-DD in the server's local timezone.
+ */
+function getTodayDateString(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export async function GET(request: Request) {
   const session = await getSession();
   if (!session) {
@@ -32,7 +44,9 @@ export async function GET(request: Request) {
       : {}),
   };
 
-  const [registrations, stats, scannedEntryCount, scannedLunchCount, scanLogs] = await Promise.all([
+  const todayDate = getTodayDateString();
+
+  const [registrations, stats, todayEntryCount, todayLunchCount, scanLogs] = await Promise.all([
     prisma.participant.findMany({
       where,
       orderBy: { createdAt: "desc" },
@@ -53,29 +67,35 @@ export async function GET(request: Request) {
         status: true,
         registrationNumber: true,
         qrCode: true,
-        scannedEntry: true,
-        scannedLunch: true,
-        scannedEntryAt: true,
-        scannedLunchAt: true,
         createdAt: true,
+        scanLogs: {
+          where: { scanDate: todayDate },
+          select: {
+            checkpoint: true,
+            scannedAt: true,
+          },
+        },
       },
     }),
     prisma.participant.groupBy({
       by: ["status"],
       _count: { status: true },
     }),
-    prisma.participant.count({
-      where: { scannedEntry: true },
+    // Count distinct participants who scanned ENTRY today
+    prisma.scanLog.count({
+      where: { checkpoint: "ENTRY", scanDate: todayDate },
     }),
-    prisma.participant.count({
-      where: { scannedLunch: true },
+    // Count distinct participants who scanned LUNCH today
+    prisma.scanLog.count({
+      where: { checkpoint: "LUNCH", scanDate: todayDate },
     }),
     prisma.scanLog.findMany({
       orderBy: { scannedAt: "desc" },
-      take: 10,
+      take: 20,
       select: {
         id: true,
         checkpoint: true,
+        scanDate: true,
         scannedAt: true,
         participant: {
           select: {
@@ -92,9 +112,10 @@ export async function GET(request: Request) {
     APPROVED: 0,
     REJECTED: 0,
     TOTAL: 0,
-    scannedEntry: scannedEntryCount,
-    scannedLunch: scannedLunchCount,
+    scannedEntry: todayEntryCount,
+    scannedLunch: todayLunchCount,
     attendanceRate: 0,
+    todayDate,
   };
 
   for (const row of stats) {
@@ -106,5 +127,19 @@ export async function GET(request: Request) {
     ? Math.round((counts.scannedEntry / counts.APPROVED) * 100)
     : 0;
 
-  return NextResponse.json({ registrations, counts, scanLogs });
+  // Map registrations to include today's scan status
+  const mappedRegistrations = registrations.map((reg) => {
+    const todayEntry = reg.scanLogs.find((l) => l.checkpoint === "ENTRY");
+    const todayLunch = reg.scanLogs.find((l) => l.checkpoint === "LUNCH");
+    return {
+      ...reg,
+      scanLogs: undefined, // remove raw scanLogs from response
+      scannedEntry: !!todayEntry,
+      scannedLunch: !!todayLunch,
+      scannedEntryAt: todayEntry?.scannedAt ?? null,
+      scannedLunchAt: todayLunch?.scannedAt ?? null,
+    };
+  });
+
+  return NextResponse.json({ registrations: mappedRegistrations, counts, scanLogs });
 }
