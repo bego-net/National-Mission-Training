@@ -15,10 +15,10 @@ import {
 } from "@/lib/validations/registration";
 
 const inputClassName =
-  "w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-800 outline-none transition-all duration-200 placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10";
+  "w-full rounded-2xl border border-amber-200 bg-white/80 px-4 py-3.5 text-sm text-stone-900 outline-none transition-all duration-200 placeholder:text-stone-400 hover:border-amber-300 hover:bg-white focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10";
 
 const selectClassName =
-  "w-full rounded-2xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-sm text-slate-800 outline-none transition-all duration-200 hover:border-slate-300 hover:bg-slate-50 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 appearance-none cursor-pointer";
+  "w-full rounded-2xl border border-amber-200 bg-white/80 px-4 py-3.5 text-sm text-stone-900 outline-none transition-all duration-200 hover:border-amber-300 hover:bg-white focus:border-amber-500 focus:bg-white focus:ring-4 focus:ring-amber-500/10 appearance-none cursor-pointer";
 
 const acceptAttribute = [
   ...ACCEPTED_PAYMENT_EXTENSIONS.map((ext) =>
@@ -120,8 +120,8 @@ export function RegistrationForm() {
     <form onSubmit={onFormSubmit} className="space-y-6" noValidate>
       <div className="grid gap-5 sm:grid-cols-2">
         {/* Full Name */}
-        <div className="sm:col-span-2 animate-fade-in">
-          <Field label="ሙሉ ስም *" htmlFor="fullName" error={errors.fullName}>
+        <div className="sm:col-span-2">
+          <Field label="ሙሉ ስም *" htmlFor="fullName" error={errors.fullName} dark>
             <input
               id="fullName"
               name="fullName"
@@ -134,8 +134,8 @@ export function RegistrationForm() {
         </div>
 
         {/* Phone */}
-        <div className="animate-fade-in">
-          <Field label="ስልክ ቁጥር *" htmlFor="phone" error={errors.phone}>
+        <div>
+          <Field label="ስልክ ቁጥር *" htmlFor="phone" error={errors.phone} dark>
             <input
               id="phone"
               name="phone"
@@ -148,8 +148,8 @@ export function RegistrationForm() {
         </div>
 
         {/* Age */}
-        <div className="animate-fade-in">
-          <Field label="ዕድሜ *" htmlFor="age" error={errors.age}>
+        <div>
+          <Field label="ዕድሜ *" htmlFor="age" error={errors.age} dark>
             <input
               id="age"
               name="age"
@@ -163,20 +163,20 @@ export function RegistrationForm() {
         </div>
 
         {/* Gender */}
-        <div className="animate-fade-in">
-          <Field label="ጾታ *" htmlFor="gender" error={errors.gender}>
+        <div>
+          <Field label="ጾታ *" htmlFor="gender" error={errors.gender} dark>
             <div className="relative">
               <select id="gender" name="gender" defaultValue="" className={selectClassName}>
-                <option value="" disabled>
+                <option value="" disabled className="bg-white text-stone-400">
                   ይምረጡ
                 </option>
                 {genderOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option key={option.value} value={option.value} className="bg-white text-stone-900">
                     {option.label}
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-amber-800">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -186,8 +186,8 @@ export function RegistrationForm() {
         </div>
 
         {/* Marital Status */}
-        <div className="animate-fade-in">
-          <Field label="የጋብቻ ሁኔታ *" htmlFor="maritalStatus" error={errors.maritalStatus}>
+        <div>
+          <Field label="የጋብቻ ሁኔታ *" htmlFor="maritalStatus" error={errors.maritalStatus} dark>
             <div className="relative">
               <select
                 id="maritalStatus"
@@ -195,16 +195,16 @@ export function RegistrationForm() {
                 defaultValue=""
                 className={selectClassName}
               >
-                <option value="" disabled>
+                <option value="" disabled className="bg-white text-stone-400">
                   ይምረጡ
                 </option>
                 {maritalStatusOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option key={option.value} value={option.value} className="bg-white text-stone-900">
                     {option.label}
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-slate-500">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-amber-800">
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
@@ -214,8 +214,8 @@ export function RegistrationForm() {
         </div>
 
         {/* Occupation */}
-        <div className="sm:col-span-2 animate-fade-in">
-          <Field label="ሙያ / ስራ *" htmlFor="occupation" error={errors.occupation}>
+        <div className="sm:col-span-2">
+          <Field label="ሙያ / ስራ *" htmlFor="occupation" error={errors.occupation} dark>
             <input
               id="occupation"
               name="occupation"
@@ -227,8 +227,8 @@ export function RegistrationForm() {
         </div>
 
         {/* Address */}
-        <div className="sm:col-span-2 animate-fade-in">
-          <Field label="አድራሻ *" htmlFor="address" error={errors.address}>
+        <div className="sm:col-span-2">
+          <Field label="አድራሻ *" htmlFor="address" error={errors.address} dark>
             <textarea
               id="address"
               name="address"
@@ -240,8 +240,8 @@ export function RegistrationForm() {
         </div>
 
         {/* Church Name */}
-        <div className="animate-fade-in">
-          <Field label="የቤተ ክርስቲያን ስም *" htmlFor="churchName" error={errors.churchName}>
+        <div>
+          <Field label="የቤተ ክርስቲያን ስም *" htmlFor="churchName" error={errors.churchName} dark>
             <input
               id="churchName"
               name="churchName"
@@ -253,8 +253,8 @@ export function RegistrationForm() {
         </div>
 
         {/* Parish Name */}
-        <div className="animate-fade-in">
-          <Field label="የአብያተ ክርስቲያኖች ስም *" htmlFor="parishName" error={errors.parishName}>
+        <div>
+          <Field label="የአብያተ ክርስቲያኖች ስም *" htmlFor="parishName" error={errors.parishName} dark>
             <input
               id="parishName"
               name="parishName"
@@ -266,8 +266,8 @@ export function RegistrationForm() {
         </div>
 
         {/* Ministry Area */}
-        <div className="sm:col-span-2 animate-fade-in">
-          <Field label="የአገልግሎት ዘርፍ *" htmlFor="ministryArea" error={errors.ministryArea}>
+        <div className="sm:col-span-2">
+          <Field label="የአገልግሎት ዘርፍ *" htmlFor="ministryArea" error={errors.ministryArea} dark>
             <input
               id="ministryArea"
               name="ministryArea"
@@ -279,26 +279,25 @@ export function RegistrationForm() {
         </div>
 
         {/* Needs Accommodation Checkbox */}
-        <div className="sm:col-span-2 animate-fade-in">
+        <div className="sm:col-span-2">
           <label
-            className={`flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300 cursor-pointer select-none ${
-              needsAccom
-                ? "border-blue-500 bg-blue-50/40 shadow-sm shadow-blue-500/5"
-                : "border-slate-200 bg-slate-50/50 hover:bg-slate-50"
-            }`}
+            className={`flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300 cursor-pointer select-none ${needsAccom
+                ? "border-amber-500 bg-amber-50 shadow-lg shadow-amber-500/5"
+                : "border-amber-200 bg-white/50 hover:bg-white/80"
+              }`}
           >
             <input
               id="needsAccommodation"
               name="needsAccommodation"
               type="checkbox"
-              className="mt-1 h-4.5 w-4.5 rounded-lg border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+              className="mt-1 h-4.5 w-4.5 rounded-lg border-amber-300 bg-white text-amber-600 focus:ring-amber-500 cursor-pointer"
               onChange={(e) => setNeedsAccom(e.target.checked)}
             />
             <div className="flex-1">
-              <span className="block text-sm font-bold text-slate-800">
+              <span className={`block text-sm font-bold ${needsAccom ? "text-amber-900" : "text-stone-850"}`}>
                 መኝታ ቦታ ያስፈልገኛል?
               </span>
-              <span className="mt-1 block text-xs leading-relaxed text-slate-500">
+              <span className="mt-1 block text-xs leading-relaxed text-stone-500">
                 በስልጠናው ወቅት መኝታ ቦታ ከፈለጉ ይህን ሳጥን ይምረጡ።
               </span>
             </div>
@@ -306,44 +305,44 @@ export function RegistrationForm() {
         </div>
 
         {/* Payment Screenshot File Upload */}
-        <div className="sm:col-span-2 animate-fade-in">
+        <div className="sm:col-span-2">
           <Field
             label="የክፍያ ማረጋገጫ ፎቶ *"
             htmlFor="paymentScreenshot"
             error={errors.paymentScreenshot}
+            dark
           >
             <div
-              className={`group relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-8 px-4 text-center transition-all duration-300 cursor-pointer ${
-                selectedFileName
-                  ? "border-emerald-400 bg-emerald-50/20"
+              className={`group relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-8 px-4 text-center transition-all duration-300 cursor-pointer ${selectedFileName
+                  ? "border-emerald-500 bg-emerald-50"
                   : errors.paymentScreenshot
-                  ? "border-rose-300 bg-rose-50/10 hover:border-rose-400"
-                  : "border-slate-200 bg-slate-50/50 hover:border-blue-400 hover:bg-slate-50"
-              }`}
+                    ? "border-rose-500 bg-rose-50 hover:border-rose-450"
+                    : "border-amber-200 bg-white/50 hover:border-amber-500/40 hover:bg-white/80"
+                }`}
             >
               {selectedFileName ? (
                 // Success Upload Icon
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 animate-fade-in">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 border border-emerald-300 text-emerald-600 animate-fade-in">
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
               ) : (
                 // Cloud Upload Icon
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors group-hover:bg-blue-50 group-hover:text-blue-500">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 border border-amber-200 text-amber-700 transition-colors group-hover:bg-amber-100 group-hover:text-amber-900">
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
                 </div>
               )}
 
-              <span className="mt-3 block text-sm font-bold text-slate-700">
+              <span className="mt-3 block text-sm font-bold text-stone-700">
                 {selectedFileName || "የማረጋገጫ ፎቶ ወይም ፒዲኤፍ እዚህ ይስቀሉ"}
               </span>
-              <span className="mt-1 block text-xs text-slate-400">
+              <span className="mt-1 block text-xs text-stone-500">
                 ክሊክ በማድረግ ወይም ፋይሉን ጎትቶ እዚህ በመጣል ይስቀሉ
               </span>
-              <span className="mt-2 text-[10px] font-medium tracking-wide text-slate-400 uppercase">
+              <span className="mt-2 text-[10px] font-medium tracking-wide text-stone-500 uppercase">
                 jpg, jpeg, png, pdf (ቢበዛ {MAX_PAYMENT_FILE_SIZE / (1024 * 1024)}MB)
               </span>
 
@@ -379,10 +378,10 @@ export function RegistrationForm() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <div>
-            <p className="text-sm font-bold text-amber-800">
+            <p className="text-sm font-bold text-amber-900">
               እባክዎ ቅጹን ያስተካክሉ
             </p>
-            <p className="mt-0.5 text-xs text-amber-700">
+            <p className="mt-0.5 text-xs text-amber-700 font-semibold">
               {Object.keys(errors).length === 1
                 ? "1 ያልተሞላ ወይም ትክክል ያልሆነ መረጃ አለ። እባክዎ ከላይ ያረጋግጡ።"
                 : `${Object.keys(errors).length} ያልተሞሉ ወይም ትክክል ያልሆኑ መረጃዎች አሉ። እባክዎ ከላይ ያረጋግጡ።`}
@@ -395,11 +394,11 @@ export function RegistrationForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="group relative flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 py-3.5 px-6 text-base font-bold text-white shadow-lg shadow-blue-500/25 transition-all duration-300 hover:from-blue-700 hover:to-indigo-800 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-500/30 active:translate-y-0 disabled:pointer-events-none disabled:opacity-60"
+        className="group relative flex w-full items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-r from-[#dec084] via-[#eedbb3] to-[#cba358] py-3.5 px-6 text-base font-bold text-[#3c2f17] border border-[#cba358]/35 shadow-[0_4px_15px_rgba(222,192,132,0.35)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_4px_25px_rgba(222,192,132,0.5)] active:translate-y-0 disabled:pointer-events-none disabled:opacity-60"
       >
         {isSubmitting ? (
           <span className="flex items-center gap-2">
-            <svg className="h-5 w-5 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+            <svg className="h-5 w-5 animate-spin text-amber-950" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
@@ -408,12 +407,11 @@ export function RegistrationForm() {
         ) : (
           <span className="relative z-10 flex items-center gap-2">
             ምዝገባ ያስገቡ
-            <svg className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+            <svg className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
               <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </span>
         )}
-        <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-white/0 via-white/20 to-white/0 transition-transform duration-1000 group-hover:translate-x-full"></div>
       </button>
     </form>
   );

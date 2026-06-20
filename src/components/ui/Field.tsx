@@ -4,21 +4,23 @@ type FieldProps = {
   label: string;
   htmlFor: string;
   error?: string;
+  dark?: boolean;
   children: ReactNode;
 };
 
-export function Field({ label, htmlFor, error, children }: FieldProps) {
+export function Field({ label, htmlFor, error, dark = false, children }: FieldProps) {
   return (
     <div className="flex flex-col gap-1.5 w-full">
       <label
         htmlFor={htmlFor}
-        className="block text-sm font-bold text-slate-700 tracking-wide select-none"
+        className={`block text-sm font-bold tracking-wide select-none ${dark ? "text-[#4c3b1a]" : "text-slate-700"
+          }`}
       >
         {label}
       </label>
       <div className="relative rounded-xl">{children}</div>
       {error && (
-        <p className="flex items-center gap-1.5 text-xs font-semibold text-rose-600 animate-fade-in">
+        <p className="flex items-center gap-1.5 text-xs font-semibold text-rose-500 animate-fade-in">
           <svg
             className="h-3.5 w-3.5 shrink-0"
             fill="none"
