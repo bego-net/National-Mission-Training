@@ -58,36 +58,52 @@ export async function PATCH(request: Request, context: RouteContext) {
     let registrationNumber = existing.registrationNumber;
     let qrCode = existing.qrCode;
 
-    if (nextStatus === "APPROVED" && !registrationNumber) {
-      // Find the last generated registration number to increment
-      const lastApproved = await prisma.participant.findFirst({
-        where: {
-          registrationNumber: {
-            startsWith: "HGM-2026-",
+    if (nextStatus === "APPROVED") {
+      if (!registrationNumber) {
+        // Find the last generated registration number to increment
+        const lastApproved = await prisma.participant.findFirst({
+          where: {
+            registrationNumber: {
+              startsWith: "HGM-2026-",
+            },
           },
-        },
-        orderBy: {
-          registrationNumber: "desc",
-        },
-        select: {
-          registrationNumber: true,
-        },
-      });
+          orderBy: {
+            registrationNumber: "desc",
+          },
+          select: {
+            registrationNumber: true,
+          },
+        });
 
-      let nextNum = 1;
-      if (lastApproved && lastApproved.registrationNumber) {
-        const match = lastApproved.registrationNumber.match(/HGM-2026-(\d+)/);
-        if (match) {
-          nextNum = parseInt(match[1], 10) + 1;
+        let nextNum = 1;
+        if (lastApproved && lastApproved.registrationNumber) {
+          const match = lastApproved.registrationNumber.match(/HGM-2026-(\d+)/);
+          if (match) {
+            nextNum = parseInt(match[1], 10) + 1;
+          }
         }
+
+        registrationNumber = `HGM-2026-${String(nextNum).padStart(4, "0")}`;
       }
 
-      registrationNumber = `HGM-2026-${String(nextNum).padStart(4, "0")}`;
-      qrCode = await QRCode.toDataURL(registrationNumber, {
-        errorCorrectionLevel: "H",
-        margin: 1,
-        width: 300,
-      });
+      // Generate QR Code if it is currently missing
+      if (!qrCode || qrCode.trim() === "") {
+        try {
+          console.log(`[QR Generation] Generating QR Code for participant: ${existing.fullName} (${registrationNumber})`);
+          qrCode = await QRCode.toDataURL(registrationNumber, {
+            errorCorrectionLevel: "H",
+            margin: 1,
+            width: 300,
+          });
+          console.log(`[QR Generation] Successfully generated QR Code base64 data URL`);
+        } catch (qrError) {
+          console.error(`[QR Generation Error] Failed to generate QR for ${registrationNumber}:`, qrError);
+          return NextResponse.json(
+            { error: "Failed to generate participant QR code. Please try again." },
+            { status: 500 }
+          );
+        }
+      }
     }
 
     const updated = await prisma.participant.update({
@@ -106,28 +122,26 @@ export async function PATCH(request: Request, context: RouteContext) {
       },
     });
 
-    // Sync approved participant data to Google Sheets
+    // Sync approved participant data to Google Sheets in the background
     if (nextStatus === "APPROVED" && updated.registrationNumber) {
-      try {
-        await appendToGoogleSheets([
-          updated.registrationNumber,
-          existing.fullName,
-          existing.phone,
-          String(existing.age),
-          existing.gender,
-          existing.maritalStatus,
-          existing.occupation,
-          existing.address,
-          existing.churchName,
-          existing.parishName,
-          existing.ministryArea,
-          existing.needsAccommodation ? "Yes" : "No",
-          "Approved",
-          existing.createdAt.toLocaleString("en-US"),
-        ]);
-      } catch (sheetError) {
-        console.error("Failed to append to Google Sheets on approval:", sheetError);
-      }
+      appendToGoogleSheets([
+        updated.registrationNumber,
+        existing.fullName,
+        existing.phone,
+        String(existing.age),
+        existing.gender,
+        existing.maritalStatus,
+        existing.occupation,
+        existing.address,
+        existing.churchName,
+        existing.parishName,
+        existing.ministryArea,
+        existing.needsAccommodation ? "Yes" : "No",
+        "Approved",
+        existing.createdAt.toLocaleString("en-US"),
+      ]).catch((sheetError) => {
+        console.error("Failed to append to Google Sheets on approval (background):", sheetError);
+      });
     }
 
     return NextResponse.json(updated);

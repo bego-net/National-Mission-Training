@@ -316,26 +316,26 @@ export function BadgeModal({ registration, onClose }: BadgeModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-md"
       role="dialog"
       aria-modal="true"
       onClick={onClose}
     >
       <div
-        className="flex max-h-[95vh] w-full max-w-md flex-col rounded-t-2xl bg-white shadow-xl sm:rounded-2xl border border-slate-100"
+        className="flex max-h-[90vh] w-full max-w-md flex-col rounded-3xl bg-white shadow-2xl border border-slate-100/80 overflow-hidden animate-fade-in"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+        <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
           <div>
-            <h2 className="text-base font-bold text-slate-900">
+            <h2 className="text-base font-extrabold text-slate-900">
               Participant Badge
             </h2>
-            <p className="text-xs text-slate-500">Preview and printing options</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Preview and print badge</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition"
+            className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-355 transition"
           >
             Close
           </button>
@@ -347,7 +347,7 @@ export function BadgeModal({ registration, onClose }: BadgeModalProps) {
             {/* Badge Header */}
             <div className="w-full bg-gradient-to-r from-blue-900 to-indigo-950 text-white text-center py-4 px-3 flex flex-col items-center">
               <h3 className="text-lg font-black tracking-wide m-0">ስምህ ይቀደስ</h3>
-              <span className="text-[8px] font-bold tracking-widest text-blue-200/90 uppercase mt-0.5">
+              <span className="text-[8px] font-bold tracking-widest text-blue-200/95 uppercase mt-0.5">
                 National Mission Training
               </span>
             </div>
@@ -357,7 +357,7 @@ export function BadgeModal({ registration, onClose }: BadgeModalProps) {
               <h4 className="text-base font-extrabold text-slate-900 leading-tight">
                 {registration.fullName}
               </h4>
-              <span className="text-xs font-medium text-slate-500 mt-1.5 block">
+              <span className="text-xs font-semibold text-slate-500 mt-1.5 block">
                 {registration.churchName}
               </span>
 
@@ -371,7 +371,7 @@ export function BadgeModal({ registration, onClose }: BadgeModalProps) {
                   />
                 </div>
               ) : (
-                <div className="my-4 w-24 h-24 border-2 border-dashed border-slate-200 rounded-xl flex items-center justify-center text-[10px] text-slate-400">
+                <div className="my-4 w-24 h-24 border-2 border-dashed border-slate-255 rounded-xl flex items-center justify-center text-[10px] text-slate-400">
                   No QR Code
                 </div>
               )}
@@ -396,25 +396,25 @@ export function BadgeModal({ registration, onClose }: BadgeModalProps) {
           </div>
         </div>
 
-        <div className="border-t border-slate-100 px-5 py-4 bg-slate-50/50 flex flex-col gap-2 sm:flex-row sm:justify-end">
+        <div className="border-t border-slate-100 px-6 py-4 bg-slate-50/50 flex flex-col gap-2 sm:flex-row sm:justify-end">
           <button
             type="button"
             disabled={isDownloading}
             onClick={() => void handleDownloadBadge()}
             className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:border-slate-300 disabled:opacity-60"
           >
-            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
             {isDownloading ? "Downloading..." : "Download PNG"}
           </button>
-          
+
           <button
             type="button"
             onClick={handlePrintBadge}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-indigo-700"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-blue-700"
           >
-            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
             Print Badge

@@ -75,7 +75,7 @@ export async function GET(request: Request) {
         paymentScreenshot: true,
         status: true,
         registrationNumber: true,
-        // qrCode excluded from list — only fetched in detail/badge views
+        qrCode: true,
         createdAt: true,
         scanLogs: {
           where: { scanDate: todayDate },
