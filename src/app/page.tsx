@@ -262,7 +262,7 @@ export default function Home() {
                     <div className="min-w-0">
                       <h4 className="text-[13px] font-bold text-[#2d220f] leading-tight">ሙያን ለወንጌል ተልዕኮ</h4>
                       <p className="text-[11px] font-semibold text-amber-700 mt-0.5">በዶ/ር አብርሃም ተ/ማርያም</p>
-                      <p className="text-[8px] text-stone-400 uppercase tracking-[0.12em] font-bold mt-0.5">Profession for Gospel Mission</p>
+                      <p className="text-[8px] text-stone-400 uppercase tracking-[0.12em] font-bold mt-0.5">profession as mission</p>
                     </div>
                   </div>
 
