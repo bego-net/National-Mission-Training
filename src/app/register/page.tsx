@@ -59,8 +59,13 @@ export default function RegisterPage() {
                       <div>
                         <h4 className="text-xs font-bold tracking-wide uppercase text-amber-850">አስፈላጊ ማሳሰቢያ</h4>
                         <p className="mt-1.5 text-xs text-stone-600 leading-relaxed font-semibold">
-                          የምዝገባ ቅጹን ከማስገባትዎ በፊት ክፍያ ፈጽመው የክፍያ ማረጋገጫ (ደረሰኝ) ማዘጋጀትዎን ያረጋግጡ።
+                          የምዝገባ ቅጹን ካስገቡ በኋላ ክፍያ ፈጽመው የክፍያ ማረጋገጫ (ደረሰኝ/sreenshot) ማዘጋጀትዎን ያረጋግጡ።
                         </p>
+                        <div className="mt-3 p-3 bg-amber-100/40 rounded-xl border border-amber-200/50">
+                          <p className="text-xs font-bold text-amber-900 mb-1">CBE (የኢትዮጵያ ንግድ ባንክ)</p>
+                          <p className="text-sm font-mono font-bold text-stone-800 tracking-wider">1000334467839</p>
+                          <p className="text-[10px] font-bold text-amber-700 uppercase tracking-widest mt-1">Hosana Gospel Movement</p>
+                        </div>
                       </div>
                     </div>
                   </div>

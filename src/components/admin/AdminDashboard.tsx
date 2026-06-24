@@ -26,9 +26,9 @@ type Registration = {
   occupation: string;
   address: string;
   churchName: string;
-  parishName: string;
   ministryArea: string;
   needsAccommodation: boolean;
+  needsTshirt: boolean;
   paymentScreenshot: string;
   status: RegistrationStatus;
   registrationNumber?: string;
@@ -639,6 +639,11 @@ export function AdminDashboard({ username, role }: AdminDashboardProps) {
                                 Accommodation Required
                               </span>
                             )}
+                            {registration.needsTshirt && (
+                              <span className="text-[9px] font-extrabold bg-amber-50 text-amber-700 border border-amber-150 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                T-Shirt Required
+                              </span>
+                            )}
 
                             <StatusBadge status={registration.status} />
                           </div>
@@ -828,11 +833,14 @@ export function AdminDashboard({ username, role }: AdminDashboardProps) {
                                 <Detail label="Occupation" value={registration.occupation} />
                                 <Detail label="Address" value={registration.address} />
                                 <Detail label="Church Name" value={registration.churchName} />
-                                <Detail label="Parish/District Name" value={registration.parishName} />
                                 <Detail label="Ministry / Service Area" value={registration.ministryArea} />
                                 <Detail
                                   label="Accommodation Needed?"
                                   value={registration.needsAccommodation ? "Yes, Accommodation Required" : "No, accommodation not required"}
+                                />
+                                <Detail
+                                  label="T-Shirt Needed?"
+                                  value={registration.needsTshirt ? "Yes, T-Shirt Required" : "No, T-shirt not required"}
                                 />
                                 <Detail
                                   label="Gate Entry Status"

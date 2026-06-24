@@ -32,9 +32,9 @@ export async function POST(request: Request) {
       occupation: formData.get("occupation"),
       address: formData.get("address"),
       churchName: formData.get("churchName"),
-      parishName: formData.get("parishName"),
       ministryArea: formData.get("ministryArea"),
       needsAccommodation: formData.get("needsAccommodation") === "true",
+      needsTshirt: formData.get("needsTshirt") === "true",
     };
 
     const parsed = registrationSchema.safeParse(raw);
@@ -86,9 +86,9 @@ export async function POST(request: Request) {
         occupation: data.occupation,
         address: data.address,
         churchName: data.churchName,
-        parishName: data.parishName,
         ministryArea: data.ministryArea,
         needsAccommodation: data.needsAccommodation,
+        needsTshirt: data.needsTshirt,
         paymentScreenshot,
       },
       select: {

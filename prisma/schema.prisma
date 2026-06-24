@@ -35,9 +35,9 @@ model Participant {
   occupation         String
   address            String
   churchName         String
-  parishName         String
   ministryArea       String
   needsAccommodation Boolean            @default(false)
+  needsTshirt        Boolean            @default(false)
   paymentScreenshot  String             @default("")
   status             RegistrationStatus @default(PENDING)
   registrationNumber String?            @unique

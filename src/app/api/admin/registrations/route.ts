@@ -43,7 +43,6 @@ export async function GET(request: Request) {
             { fullName: { contains: q, mode: "insensitive" as const } },
             { phone: { contains: q } },
             { churchName: { contains: q, mode: "insensitive" as const } },
-            { parishName: { contains: q, mode: "insensitive" as const } },
             { registrationNumber: { contains: q, mode: "insensitive" as const } },
           ],
         }
@@ -69,9 +68,9 @@ export async function GET(request: Request) {
         occupation: true,
         address: true,
         churchName: true,
-        parishName: true,
         ministryArea: true,
         needsAccommodation: true,
+        needsTshirt: true,
         paymentScreenshot: true,
         status: true,
         registrationNumber: true,

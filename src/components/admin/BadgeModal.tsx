@@ -13,9 +13,9 @@ type Registration = {
   occupation: string;
   address: string;
   churchName: string;
-  parishName: string;
   ministryArea: string;
   needsAccommodation: boolean;
+  needsTshirt: boolean;
   paymentScreenshot: string;
   status: RegistrationStatus;
   registrationNumber?: string;

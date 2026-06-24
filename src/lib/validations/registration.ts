@@ -34,9 +34,9 @@ export const registrationSchema = z.object({
   occupation: z.string().trim().min(2, "ሙያ/ስራ አስገዳጅ ነው"),
   address: z.string().trim().min(3, "አድራሻ አስገዳጅ ነው"),
   churchName: z.string().trim().min(2, "የቤተ ክርስቲያን ስም አስገዳጅ ነው"),
-  parishName: z.string().trim().min(2, "የአብያተ ክርስቲያኖች ስም አስገዳጅ ነው"),
   ministryArea: z.string().trim().min(2, "የአገልግሎት ዘርፍ አስገዳጅ ነው"),
   needsAccommodation: z.boolean(),
+  needsTshirt: z.boolean(),
 });
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;

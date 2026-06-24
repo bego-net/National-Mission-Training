@@ -34,6 +34,7 @@ export function RegistrationForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState("");
   const [needsAccom, setNeedsAccom] = useState(false);
+  const [needsTshirt, setNeedsTshirt] = useState(false);
 
   function onFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -59,9 +60,9 @@ export function RegistrationForm() {
       occupation: formData.get("occupation"),
       address: formData.get("address"),
       churchName: formData.get("churchName"),
-      parishName: formData.get("parishName"),
       ministryArea: formData.get("ministryArea"),
       needsAccommodation: formData.get("needsAccommodation") === "on",
+      needsTshirt: formData.get("needsTshirt") === "on",
     };
 
     const fieldErrors: Record<string, string> = {};
@@ -86,6 +87,10 @@ export function RegistrationForm() {
     formData.set(
       "needsAccommodation",
       parsed.data.needsAccommodation ? "true" : "false",
+    );
+    formData.set(
+      "needsTshirt",
+      parsed.data.needsTshirt ? "true" : "false",
     );
 
     setIsSubmitting(true);
@@ -240,7 +245,7 @@ export function RegistrationForm() {
         </div>
 
         {/* Church Name */}
-        <div>
+        <div className="sm:col-span-2">
           <Field label="የቤተ ክርስቲያን ስም *" htmlFor="churchName" error={errors.churchName} dark>
             <input
               id="churchName"
@@ -248,19 +253,6 @@ export function RegistrationForm() {
               type="text"
               className={inputClassName}
               placeholder="የቤተ ክርስቲያን ስም"
-            />
-          </Field>
-        </div>
-
-        {/* Parish Name */}
-        <div>
-          <Field label="የአብያተ ክርስቲያኖች ስም *" htmlFor="parishName" error={errors.parishName} dark>
-            <input
-              id="parishName"
-              name="parishName"
-              type="text"
-              className={inputClassName}
-              placeholder="የአብያተ ክርስቲያኖች ስም"
             />
           </Field>
         </div>
@@ -295,13 +287,68 @@ export function RegistrationForm() {
             />
             <div className="flex-1">
               <span className={`block text-sm font-bold ${needsAccom ? "text-amber-900" : "text-stone-850"}`}>
-                መኝታ ቦታ ያስፈልገኛል?
+                መኝታ ቦታ ያስፈልገኛል? (+200 ETB)
               </span>
               <span className="mt-1 block text-xs leading-relaxed text-stone-500">
                 በስልጠናው ወቅት መኝታ ቦታ ከፈለጉ ይህን ሳጥን ይምረጡ።
               </span>
             </div>
           </label>
+        </div>
+
+        {/* Needs T-Shirt Checkbox */}
+        <div className="sm:col-span-2">
+          <label
+            className={`flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300 cursor-pointer select-none ${needsTshirt
+                ? "border-amber-500 bg-amber-50 shadow-lg shadow-amber-500/5"
+                : "border-amber-200 bg-white/50 hover:bg-white/80"
+              }`}
+          >
+            <input
+              id="needsTshirt"
+              name="needsTshirt"
+              type="checkbox"
+              className="mt-1 h-4.5 w-4.5 rounded-lg border-amber-300 bg-white text-amber-600 focus:ring-amber-500 cursor-pointer"
+              onChange={(e) => setNeedsTshirt(e.target.checked)}
+            />
+            <div className="flex-1">
+              <span className={`block text-sm font-bold ${needsTshirt ? "text-amber-900" : "text-stone-850"}`}>
+                ቲሸርት ይፈልጋሉ? (+300 ETB)
+              </span>
+              <span className="mt-1 block text-xs leading-relaxed text-stone-500">
+                ለስልጠናው የተዘጋጀ ቲሸርት ለመግዛት ከፈለጉ ይህን ሳጥን ይምረጡ።
+              </span>
+            </div>
+          </label>
+        </div>
+
+        {/* Dynamic Pricing Breakdown Display */}
+        <div className="sm:col-span-2 rounded-2xl border border-amber-200 bg-amber-50/20 p-5 backdrop-blur-sm">
+          <h4 className="text-xs font-bold uppercase tracking-wider text-amber-800 mb-3">የክፍያ ዝርዝር (Payment Details)</h4>
+          <div className="space-y-2 text-sm text-stone-750 font-medium">
+            <div className="flex justify-between">
+              <span>መደበኛ ምዝገባ (Registration)</span>
+              <span>1,000 ETB</span>
+            </div>
+            {needsAccom && (
+              <div className="flex justify-between text-stone-700 animate-fade-in">
+                <span>መኝታ ቦታ (Accommodation)</span>
+                <span>+200 ETB</span>
+              </div>
+            )}
+            {needsTshirt && (
+              <div className="flex justify-between text-stone-700 animate-fade-in">
+                <span>ቲሸርት (T-Shirt)</span>
+                <span>+300 ETB</span>
+              </div>
+            )}
+            <div className="pt-2.5 mt-2.5 border-t border-amber-200 flex justify-between font-extrabold text-stone-900 text-base">
+              <span>ጠቅላላ ክፍያ (Total Payment)</span>
+              <span className="text-amber-850 tracking-wide font-black">
+                {1000 + (needsAccom ? 200 : 0) + (needsTshirt ? 300 : 0)} ETB
+              </span>
+            </div>
+          </div>
         </div>
 
         {/* Payment Screenshot File Upload */}

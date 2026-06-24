@@ -212,23 +212,11 @@ export default function Home() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                   </div>
-                  <p className="mt-4 text-4xl font-extrabold text-[#2d220f] tracking-tight">4 ቀናት</p>
-                  <p className="mt-2 text-xs font-bold text-[#5c4a2a] tracking-wide">ቆይታ (ሐምሌ 21-24)</p>
+                  <p className="mt-4 text-4xl font-extrabold text-[#2d220f] tracking-tight">5 ቀናት</p>
+                  <p className="mt-2 text-xs font-bold text-[#5c4a2a] tracking-wide">ቆይታ (ሐምሌ 21-25)</p>
                   <p className="mt-0.5 text-[10px] text-stone-400 uppercase">Event Duration</p>
                 </div>
 
-                {/* Card 3: Amenities */}
-                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-6 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-emerald-500/5 to-transparent rounded-bl-full"></div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600">
-                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                  </div>
-                  <p className="mt-4 text-4xl font-extrabold text-[#2d220f] tracking-tight">100%</p>
-                  <p className="mt-2 text-xs font-bold text-[#5c4a2a] tracking-wide">ነጻ ምግብ እና ማደሪያ</p>
-                  <p className="mt-0.5 text-[10px] text-stone-400 uppercase">Meals & Lodging</p>
-                </div>
 
                 {/* Card 4: Venue */}
                 <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-6 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
@@ -249,8 +237,6 @@ export default function Home() {
                 <p className="text-xs text-stone-500 font-bold uppercase tracking-wider">Supported Financial Institutions</p>
                 <div className="mt-4 flex flex-wrap justify-center gap-4 text-[#5c4a2a] text-sm font-semibold">
                   <span className="px-3.5 py-1.5 rounded-xl bg-white/65 border border-amber-200/40 shadow-sm">CBE (የኢትዮጵያ ንግድ ባንክ)</span>
-                  <span className="px-3.5 py-1.5 rounded-xl bg-white/65 border border-amber-200/40 shadow-sm">Telebirr (ቴሌብር)</span>
-                  <span className="px-3.5 py-1.5 rounded-xl bg-white/65 border border-amber-200/40 shadow-sm">Abyssinia (አቢሲኒያ ባንክ)</span>
                 </div>
               </div>
             </section>
@@ -343,6 +329,44 @@ export default function Home() {
                   <span className="mt-4 block text-sm font-bold tracking-wider text-amber-700">
                     — ማቴ 6:9-10
                   </span>
+                </div>
+              </div>
+            </section>
+
+            {/* Support Section */}
+            <section className="relative overflow-hidden rounded-3xl border border-amber-200/50 bg-white/60 p-8 shadow-lg backdrop-blur-md sm:p-12">
+              <div className="absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(217,119,6,0.02),transparent_60%)]"></div>
+              
+              <div className="text-center mb-8 relative z-10">
+                <h3 className="text-2xl font-black text-[#2d220f]">የእገዛ ማዕከል (Support)</h3>
+                <p className="mt-2 text-sm text-[#5c4a2a] font-medium">ለማንኛውም ጥያቄ ወይም እገዛ እባክዎ ያግኙን</p>
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-3 relative z-10">
+                {/* Ethio Telecom */}
+                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-6 text-center shadow-sm">
+                  <p className="text-xs font-bold uppercase tracking-wider text-amber-900 mb-4">Ethio Telecom</p>
+                  <div className="space-y-2">
+                    <a href="tel:+251982755544" className="block text-lg font-mono font-bold text-stone-800 hover:text-amber-700 transition">1️⃣ 0982755544</a>
+                    <a href="tel:+251982787981" className="block text-lg font-mono font-bold text-stone-800 hover:text-amber-700 transition">2️⃣ 0982787981</a>
+                  </div>
+                </div>
+
+                {/* Safaricom */}
+                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-6 text-center shadow-sm">
+                  <p className="text-xs font-bold uppercase tracking-wider text-emerald-900 mb-4">Safaricom</p>
+                  <div className="space-y-2">
+                    <a href="tel:+251710557591" className="block text-lg font-mono font-bold text-stone-800 hover:text-emerald-700 transition">1️⃣ 0710557591</a>
+                  </div>
+                </div>
+
+                {/* Telegram */}
+                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-6 text-center shadow-sm">
+                  <p className="text-xs font-bold uppercase tracking-wider text-blue-900 mb-4">Telegram</p>
+                  <div className="space-y-2">
+                    <a href="https://t.me/wami_ka" target="_blank" rel="noopener noreferrer" className="block text-lg font-bold text-stone-800 hover:text-blue-600 transition">@wami_ka</a>
+                    <a href="https://t.me/I_am_some" target="_blank" rel="noopener noreferrer" className="block text-lg font-bold text-stone-800 hover:text-blue-600 transition">@I_am_some</a>
+                  </div>
                 </div>
               </div>
             </section>
