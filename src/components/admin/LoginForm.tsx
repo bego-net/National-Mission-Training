@@ -21,7 +21,7 @@ export function LoginForm() {
 
     const formData = new FormData(event.currentTarget);
     const raw = {
-      username: formData.get("username"),
+      email: formData.get("email"),
       password: formData.get("password"),
     };
 
@@ -62,14 +62,14 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-      <Field label="Username" htmlFor="username" error={errors.username}>
+      <Field label="Email Address" htmlFor="email" error={errors.email}>
         <input
-          id="username"
-          name="username"
-          type="text"
-          autoComplete="username"
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
           className={inputClassName}
-          placeholder="Enter admin username"
+          placeholder="Enter admin email"
         />
       </Field>
 

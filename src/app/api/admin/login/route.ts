@@ -1,29 +1,47 @@
 import { NextResponse } from "next/server";
-import { setSessionCookie, verifyAdminCredentials } from "@/lib/auth";
+import { setSessionCookie, comparePassword, seedDefaultSuperAdmin } from "@/lib/auth";
 import { loginSchema } from "@/lib/validations/auth";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(request: Request) {
   try {
+    // Seed default admin if table is empty
+    await seedDefaultSuperAdmin();
+
     const body = await request.json();
     const parsed = loginSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
-        { error: "Please enter your username and password." },
+        { error: "Please enter your email and password." },
         { status: 400 },
       );
     }
 
-    const { username, password } = parsed.data;
+    const { email, password } = parsed.data;
 
-    if (!verifyAdminCredentials(username, password)) {
+    // Find admin by email
+    const admin = await prisma.admin.findUnique({
+      where: { email },
+    });
+
+    if (!admin) {
       return NextResponse.json(
-        { error: "Invalid username or password." },
+        { error: "Invalid email or password." },
         { status: 401 },
       );
     }
 
-    await setSessionCookie(username);
+    // Verify password
+    const isPasswordValid = await comparePassword(password, admin.password);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { error: "Invalid email or password." },
+        { status: 401 },
+      );
+    }
+
+    await setSessionCookie(admin);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error("Login error:", error);
