@@ -139,7 +139,7 @@ export async function PATCH(request: Request, context: RouteContext) {
         existing.needsAccommodation ? "Yes" : "No",
         existing.needsTshirt ? "Yes" : "No",
         "Approved",
-        existing.createdAt.toLocaleString("en-US"),
+        existing.createdAt.toLocaleString("en-US", { timeZone: "Africa/Nairobi" }),
       ]).catch((sheetError) => {
         console.error("Failed to append to Google Sheets on approval (background):", sheetError);
       });

@@ -189,6 +189,7 @@ export function ManageAdminsClient({ currentUserId, currentUserName }: ManageAdm
     return new Intl.DateTimeFormat("en-US", {
       dateStyle: "medium",
       timeStyle: "short",
+      timeZone: "Africa/Nairobi",
     }).format(new Date(dateStr));
   }
 

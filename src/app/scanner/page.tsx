@@ -187,6 +187,7 @@ export default function ScannerPage() {
       minute: "2-digit",
       second: "2-digit",
       hour12: true,
+      timeZone: "Africa/Nairobi",
     }).format(new Date(timeString));
   }
 

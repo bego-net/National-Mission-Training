@@ -7,10 +7,9 @@ import { prisma } from "@/lib/prisma";
  */
 function getTodayDateString(): string {
   const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  const eatString = now.toLocaleDateString("en-US", { timeZone: "Africa/Nairobi" });
+  const [month, day, year] = eatString.split("/");
+  return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
 }
 
 export async function POST(request: Request) {

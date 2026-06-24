@@ -211,6 +211,7 @@ export function AdminDashboard({ username, role }: AdminDashboardProps) {
     return new Intl.DateTimeFormat("en-US", {
       dateStyle: "medium",
       timeStyle: "short",
+      timeZone: "Africa/Nairobi",
     }).format(new Date(date));
   }
 
@@ -240,13 +241,13 @@ export function AdminDashboard({ username, role }: AdminDashboardProps) {
   }, [activeTab, attendanceFetched, fetchAttendance]);
 
   function formatDayLabel(dateStr: string) {
-    const [year, month, day] = dateStr.split("-").map(Number);
     return new Intl.DateTimeFormat("en-US", {
       weekday: "long",
       year: "numeric",
       month: "long",
       day: "numeric",
-    }).format(new Date(year, (month || 1) - 1, day || 1));
+      timeZone: "UTC",
+    }).format(new Date(dateStr + "T00:00:00Z"));
   }
 
   function handleDownload(date: string, format: "csv" | "xlsx") {
