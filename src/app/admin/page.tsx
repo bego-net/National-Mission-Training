@@ -13,5 +13,5 @@ export default async function AdminPage() {
     redirect("/admin/login");
   }
 
-  return <AdminDashboard username={session.username} />;
+  return <AdminDashboard username={session.name} role={session.role} />;
 }

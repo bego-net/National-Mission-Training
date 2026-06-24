@@ -66,6 +66,7 @@ type Pagination = {
 
 type AdminDashboardProps = {
   username: string;
+  role: "SUPER_ADMIN" | "ADMIN";
 };
 
 type ReceiptView = {
@@ -87,7 +88,7 @@ const statusFilters: { value: "" | RegistrationStatus; label: string }[] = [
   { value: "REJECTED", label: statusLabels.REJECTED },
 ];
 
-export function AdminDashboard({ username }: AdminDashboardProps) {
+export function AdminDashboard({ username, role }: AdminDashboardProps) {
   const router = useRouter();
   const [registrations, setRegistrations] = useState<Registration[]>([]);
   const [counts, setCounts] = useState<Counts>({
@@ -331,6 +332,14 @@ export function AdminDashboard({ username }: AdminDashboardProps) {
           </div>
 
           <div className="flex items-center gap-2">
+            {role === "SUPER_ADMIN" && (
+              <a
+                href="/admin/admins"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-sm transition hover:bg-slate-50 hover:text-slate-950 active:scale-[0.99]"
+              >
+                ⚙️ Manage Admins
+              </a>
+            )}
             {/* Highly visible direct Scanner Link */}
             <a
               href="/scanner"
