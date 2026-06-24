@@ -50,9 +50,18 @@ export async function appendToGoogleSheets(row: string[]): Promise<boolean> {
   const privateKey = process.env.GOOGLE_PRIVATE_KEY;
   const sheetId = process.env.GOOGLE_SHEET_ID;
 
+  const participantName = row[1] || "Unknown";
+  const participantPhone = row[2] || "Unknown";
+
   if (!email || !privateKey || !sheetId) {
-    console.warn("Google Sheets credentials are not fully configured. Skipping sheet sync.");
-    return false;
+    const missing = [];
+    if (!email) missing.push("GOOGLE_SERVICE_ACCOUNT_EMAIL");
+    if (!privateKey) missing.push("GOOGLE_PRIVATE_KEY");
+    if (!sheetId) missing.push("GOOGLE_SHEET_ID");
+    
+    const warnMsg = `Google Sheets credentials are not fully configured. Missing: ${missing.join(", ")}. Skipping sheet sync for ${participantName} (${participantPhone}).`;
+    console.warn(warnMsg);
+    throw new Error(warnMsg);
   }
 
   try {
@@ -73,13 +82,15 @@ export async function appendToGoogleSheets(row: string[]): Promise<boolean> {
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error(`Google Sheets append failed: ${response.statusText} - ${errText}`);
-      return false;
+      const errMsg = `Google Sheets API append failed: ${response.statusText} - ${errText}`;
+      console.error(`[Google Sheets Sync Error] ${errMsg} (Participant: ${participantName}, Phone: ${participantPhone})`);
+      throw new Error(errMsg);
     }
 
+    console.log(`[Google Sheets Sync Success] Appended row for ${participantName} (${participantPhone})`);
     return true;
-  } catch (error) {
-    console.error("Google Sheets integration failed:", error);
-    return false;
+  } catch (error: any) {
+    console.error(`[Google Sheets Sync Error] Integration failed for ${participantName} (${participantPhone}):`, error);
+    throw error;
   }
 }
