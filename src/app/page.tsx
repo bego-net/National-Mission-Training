@@ -308,25 +308,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Card 5: Training Tracks & Speakers */}
-                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-6 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm flex flex-col justify-between">
-                  <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-indigo-500/5 to-transparent rounded-bl-full"></div>
-                  <div className="relative z-10">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 mb-4">
-                      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                      </svg>
-                    </div>
-                    <p className="text-4xl font-extrabold text-[#2d220f] tracking-tight">4+</p>
-                    <p className="mt-2 text-xs font-bold text-[#5c4a2a] tracking-wide">ዋና ዋና የስልጠና ርዕሶች</p>
-                    <p className="mt-0.5 text-[10px] text-stone-400 uppercase">Training Tracks</p>
-                  </div>
-                  <div className="relative z-10 mt-5 pt-4 border-t border-amber-200/40">
-                    <p className="text-xl font-extrabold text-[#2d220f] tracking-tight">4+</p>
-                    <p className="mt-1 text-[11px] font-bold text-[#5c4a2a] tracking-wide">አገልጋዮች እና አሰልጣኞች</p>
-                    <p className="mt-0.5 text-[9px] text-stone-400 uppercase">Speakers &amp; Trainers</p>
-                  </div>
-                </div>
 
               </div>
 
