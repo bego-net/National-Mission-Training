@@ -197,34 +197,34 @@ export default function Home() {
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
                 {/* Card 1: Total Participants */}
-                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-6 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
+                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-5 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/5 to-transparent rounded-bl-full"></div>
-                  <p className="text-4xl font-extrabold text-[#2d220f] tracking-tight">3,000+</p>
-                  <p className="mt-2 text-xs font-bold text-[#5c4a2a] tracking-wide">ሀገር አቀፍ ተሳታፊዎች</p>
+                  <h4 className="text-xl sm:text-2xl font-black text-amber-950 tracking-tight">3,000+</h4>
+                  <p className="mt-1.5 text-xs font-bold text-[#5c4a2a] tracking-wide">ሀገር አቀፍ ተሳታፊዎች</p>
                   <p className="mt-0.5 text-[10px] text-stone-400 uppercase">Total Participants</p>
                 </div>
 
                 {/* Card 2: Duration */}
-                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-6 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
+                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-5 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-rose-500/5 to-transparent rounded-bl-full"></div>
-                  <p className="text-4xl font-extrabold text-[#2d220f] tracking-tight">5 ቀናት</p>
-                  <p className="mt-2 text-xs font-bold text-[#5c4a2a] tracking-wide">ቆይታ (ሐምሌ 21-25)</p>
+                  <h4 className="text-xl sm:text-2xl font-black text-amber-950 tracking-tight">5 ቀናት</h4>
+                  <p className="mt-1.5 text-xs font-bold text-[#5c4a2a] tracking-wide">ቆይታ (ሐምሌ 21-25)</p>
                   <p className="mt-0.5 text-[10px] text-stone-400 uppercase">Event Duration</p>
                 </div>
 
                 {/* Card 3: Venue */}
-                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-6 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
+                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-5 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/5 to-transparent rounded-bl-full"></div>
-                  <p className="text-4xl font-extrabold text-[#2d220f] tracking-tight">ሆሳዕና</p>
-                  <p className="mt-2 text-xs font-bold text-[#5c4a2a] tracking-wide">ስልጠናው ቦታ (እናት ቃለ ሕይወት)</p>
+                  <h4 className="text-xl sm:text-2xl font-black text-amber-950 tracking-tight">ሆሳዕና</h4>
+                  <p className="mt-1.5 text-xs font-bold text-[#5c4a2a] tracking-wide">ስልጠናው ቦታ (እናት ቃለ ሕይወት)</p>
                   <p className="mt-0.5 text-[10px] text-stone-400 uppercase">Training Venue</p>
                 </div>
 
                 {/* Card 4: Speakers & Tracks */}
-                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-6 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
+                <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-5 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-indigo-500/5 to-transparent rounded-bl-full"></div>
-                  <p className="text-4xl font-extrabold text-[#2d220f] tracking-tight">4+</p>
-                  <p className="mt-2 text-xs font-bold text-[#5c4a2a] tracking-wide">አገልጋዮች እና ዋና ዋና የስልጠና ርዕሶች</p>
+                  <h4 className="text-xl sm:text-2xl font-black text-amber-950 tracking-tight">4+</h4>
+                  <p className="mt-1.5 text-xs font-bold text-[#5c4a2a] tracking-wide">አገልጋዮች እና ዋና ዋና የስልጠና ርዕሶች</p>
                   <p className="mt-0.5 text-[10px] text-stone-400 uppercase">Speakers &amp; Training Tracks</p>
                 </div>
               </div>
@@ -330,93 +330,124 @@ export default function Home() {
               </div>
             </section>
 
-            {/* Support Section */}
-            <section className="relative overflow-hidden rounded-3xl border border-amber-200/50 bg-white/60 p-8 shadow-lg backdrop-blur-md sm:p-12">
-              <div className="absolute inset-x-0 top-0 h-24 bg-[radial-gradient(circle_at_top,rgba(217,119,6,0.02),transparent_60%)]"></div>
+            {/* Support and Organizer Side-by-Side Section */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Support Card */}
+              <section className="relative overflow-hidden rounded-2xl border border-amber-200/50 bg-white/60 p-6 shadow-md backdrop-blur-md flex flex-col justify-between">
+                <div className="absolute inset-x-0 top-0 h-16 bg-[radial-gradient(circle_at_top,rgba(217,119,6,0.02),transparent_60%)]"></div>
+                <div className="relative z-10 space-y-4">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/50 px-3 py-1 text-xs font-bold text-amber-800">
+                      የእገዛ ማዕከል (Support)
+                    </span>
+                    <p className="mt-1 text-xs text-[#5c4a2a] font-medium">ለማንኛውም ጥያቄ ወይም እገዛ እባክዎ ያግኙን</p>
+                  </div>
 
-              <div className="text-center mb-8 relative z-10">
-                <h3 className="text-2xl font-black text-[#2d220f]">የእገዛ ማዕከል (Support)</h3>
-                <p className="mt-2 text-sm text-[#5c4a2a] font-medium">ለማንኛውም ጥያቄ ወይም እገዛ እባክዎ ያግኙን</p>
-              </div>
+                  <div className="space-y-3">
+                    {/* Ethio Telecom */}
+                    <div className="flex items-start gap-3 rounded-xl bg-amber-50/40 border border-amber-100/50 p-3 shadow-[0_2px_8px_rgba(217,119,6,0.03)]">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-900 font-extrabold text-xs">
+                        ET
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-[10px] font-bold text-amber-950 uppercase tracking-wide">Ethio Telecom</p>
+                        <div className="flex flex-wrap gap-x-2 text-sm font-bold font-mono text-stone-800">
+                          <a href="tel:+251982755544" className="hover:text-amber-700 transition">0982755544</a>
+                          <span className="text-amber-300">/</span>
+                          <a href="tel:+251982787981" className="hover:text-amber-700 transition">0982787981</a>
+                        </div>
+                      </div>
+                    </div>
 
-              <div className="grid gap-6 sm:grid-cols-3 relative z-10">
-                {/* Ethio Telecom */}
-                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-6 text-center shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-wider text-amber-900 mb-4">Ethio Telecom</p>
-                  <div className="space-y-2">
-                    <a href="tel:+251982755544" className="block text-lg font-mono font-bold text-stone-800 hover:text-amber-700 transition">1️⃣ 0982755544</a>
-                    <a href="tel:+251982787981" className="block text-lg font-mono font-bold text-stone-800 hover:text-amber-700 transition">2️⃣ 0982787981</a>
+                    {/* Safaricom */}
+                    <div className="flex items-start gap-3 rounded-xl bg-emerald-50/30 border border-emerald-100/40 p-3 shadow-[0_2px_8px_rgba(16,185,129,0.02)]">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-950 font-extrabold text-xs">
+                        SF
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-[10px] font-bold text-emerald-950 uppercase tracking-wide">Safaricom</p>
+                        <a href="tel:+251710557591" className="block text-sm font-bold font-mono text-stone-800 hover:text-emerald-700 transition">0710557591</a>
+                      </div>
+                    </div>
+
+                    {/* Telegram */}
+                    <div className="flex items-start gap-3 rounded-xl bg-blue-50/30 border border-blue-100/40 p-3 shadow-[0_2px_8px_rgba(59,130,246,0.02)]">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-900 text-xs">
+                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.96 1.24-5.54 3.66-.52.36-1 .53-1.42.52-.47-.01-1.37-.27-2.03-.49-.82-.27-1.47-.42-1.42-.88.03-.24.36-.49.99-.74 3.89-1.69 6.48-2.8 7.78-3.33 3.69-1.52 4.46-1.78 4.96-1.79.11 0 .36.03.52.16.13.11.17.26.19.37z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-[10px] font-bold text-blue-950 uppercase tracking-wide">Telegram</p>
+                        <div className="flex flex-wrap gap-x-3 text-sm font-bold text-stone-800">
+                          <a href="https://t.me/wami_ka" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition">@wami_ka</a>
+                          <span className="text-stone-300">|</span>
+                          <a href="https://t.me/I_am_some" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition">@I_am_some</a>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </section>
 
-                {/* Safaricom */}
-                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-6 text-center shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-wider text-emerald-900 mb-4">Safaricom</p>
-                  <div className="space-y-2">
-                    <a href="tel:+251710557591" className="block text-lg font-mono font-bold text-stone-800 hover:text-emerald-700 transition">1️⃣ 0710557591</a>
+              {/* Organizer Card */}
+              <section className="relative overflow-hidden rounded-2xl border border-amber-200/50 bg-white/60 p-6 shadow-md backdrop-blur-md flex flex-col justify-between">
+                <div className="absolute inset-x-0 bottom-0 h-16 bg-[radial-gradient(circle_at_bottom,rgba(217,119,6,0.02),transparent_60%)]"></div>
+                <div className="relative z-10 space-y-5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200/50 px-3 py-1 text-xs font-bold text-amber-800">
+                      አዘጋጅ (Organizer)
+                    </span>
+                    <h4 className="mt-2.5 text-lg font-black text-[#2d220f]">HGM (Hossana Gospel Movement)</h4>
+                    <p className="mt-1 text-xs text-[#5c4a2a]/80 font-medium">ክርስትያኖችን ለተልዕኮ ማነሳሳትና ማብቀት </p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-[10px] font-bold text-[#5c4a2a]/90 uppercase tracking-wide mb-2">ማህበራዊ ሚዲያ (Socials)</p>
+                      <div className="flex flex-wrap gap-2">
+                        <a
+                          href="https://t.me/hossanagospelmovement"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 border border-amber-200/40 px-3 py-2 text-xs font-bold text-amber-850 hover:bg-amber-100/70 hover:text-amber-950 transition shadow-sm"
+                        >
+                          Telegram
+                        </a>
+                        <a
+                          href="https://www.tiktok.com/@hgm180?_r=1&_d=ekl33fc5k83e80&sec_uid=MS4wLjABAAAAcUlBx8Zyr6PaQbRhAc-yPujnT-gV3fGT-aaXpBqMKxpwFGjlfCYYuTjhsQWOnqOA&share_author_id=7505492450350629943&sharer_language=en&source=h5_m&u_code=e78gc0adg78m56&timestamp=1781118170&user_id=7218218390287123462&sec_user_id=MS4wLjABAAAAzmZA5v0hPdfyN1OtBwrCloT-UU11ZmlgHggxFyDrlkYje-GSQ1dBNoG570O8yejM&item_author_type=2&utm_source=copy&utm_campaign=client_share&utm_medium=android&share_iid=7641307348003358484&share_link_id=9352e3f3-ccf6-43fe-bec4-70e44ad48fe4&share_app_id=1233&ugbiz_name=ACCOUNT&ug_btm=b6880%2Cb5836&social_share_type=5&enable_checksum=1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-amber-200/40 px-3 py-2 text-xs font-bold text-amber-900 hover:bg-amber-50 transition shadow-sm"
+                        >
+                          TikTok
+                        </a>
+                        <a
+                          href="https://www.facebook.com/share/1AiqmwHKZc/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 border border-amber-200/40 px-3 py-2 text-xs font-bold text-amber-850 hover:bg-amber-100/70 hover:text-amber-950 transition shadow-sm"
+                        >
+                          Facebook
+                        </a>
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/register"
+                      className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-[#dec084] via-[#eedbb3] to-[#cba358] text-[#3c2f17] border border-[#cba358]/35 w-full py-3 text-xs font-bold shadow-sm transition hover:scale-[1.01] active:scale-[0.99]"
+                    >
+                      <span className="relative z-10 flex items-center gap-1">
+                        አሁን ይመዝገቡ
+                        <svg className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </span>
+                    </Link>
                   </div>
                 </div>
-
-                {/* Telegram */}
-                <div className="rounded-2xl border border-amber-100 bg-amber-50/50 p-6 text-center shadow-sm">
-                  <p className="text-xs font-bold uppercase tracking-wider text-blue-900 mb-4">Telegram</p>
-                  <div className="space-y-2">
-                    <a href="https://t.me/wami_ka" target="_blank" rel="noopener noreferrer" className="block text-lg font-bold text-stone-800 hover:text-blue-600 transition">@wami_ka</a>
-                    <a href="https://t.me/I_am_some" target="_blank" rel="noopener noreferrer" className="block text-lg font-bold text-stone-800 hover:text-blue-600 transition">@I_am_some</a>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Organizer details */}
-            <section className="relative overflow-hidden rounded-3xl border border-amber-200/50 bg-white/60 p-8 shadow-lg backdrop-blur-md sm:p-12">
-              <div className="absolute inset-x-0 bottom-0 h-24 bg-[radial-gradient(circle_at_bottom,rgba(217,119,6,0.02),transparent_60%)]"></div>
-
-              <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-[#5c4a2a]">አዘጋጅ (Organizer)</p>
-                  <h3 className="mt-2 text-2xl font-black text-[#2d220f]">HGM (Hossana Gospel Movement)</h3>
-                  <p className="mt-1 text-xs text-[#5c4a2a]/80 font-medium">ለተልዕኮ ክርስትያኖችን ለማነሳሳትና ለማብቀት የተዘጋጀ</p>
-                </div>
-
-                {/* Social Channels */}
-                <div className="flex flex-wrap justify-center gap-3">
-                  <a
-                    href="https://t.me/hossanagospelmovement"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-amber-50 border border-amber-200/50 px-6 py-3.5 text-sm font-bold text-amber-800 hover:bg-amber-100/70 hover:text-amber-950 transition-all duration-200 shadow-sm"
-                  >
-                    Telegram
-                  </a>
-
-                  <a
-                    href="https://www.tiktok.com/@hgm180?_r=1&_d=ekl33fc5k83e80&sec_uid=MS4wLjABAAAAcUlBx8Zyr6PaQbRhAc-yPujnT-gV3fGT-aaXpBqMKxpwFGjlfCYYuTjhsQWOnqOA&share_author_id=7505492450350629943&sharer_language=en&source=h5_m&u_code=e78gc0adg78m56&timestamp=1781118170&user_id=7218218390287123462&sec_user_id=MS4wLjABAAAAzmZA5v0hPdfyN1OtBwrCloT-UU11ZmlgHggxFyDrlkYje-GSQ1dBNoG570O8yejM&item_author_type=2&utm_source=copy&utm_campaign=client_share&utm_medium=android&share_iid=7641307348003358484&share_link_id=9352e3f3-ccf6-43fe-bec4-70e44ad48fe4&share_app_id=1233&ugbiz_name=ACCOUNT&ug_btm=b6880%2Cb5836&social_share_type=5&enable_checksum=1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-white border border-amber-200/50 px-6 py-3.5 text-sm font-bold text-amber-900 hover:bg-amber-50 transition-all duration-200 shadow-sm"
-                  >
-                    TikTok
-                  </a>
-
-                  <a
-                    href="https://www.facebook.com/share/1AiqmwHKZc/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2.5 rounded-xl bg-amber-50 border border-amber-200/50 px-6 py-3.5 text-sm font-bold text-amber-800 hover:bg-amber-100/70 hover:text-amber-950 transition-all duration-200 shadow-sm"
-                  >
-                    Facebook
-                  </a>
-                </div>
-
-                <Link
-                  href="/register"
-                  className="group relative inline-flex items-center justify-center overflow-hidden rounded-xl bg-gradient-to-r from-[#dec084] via-[#eedbb3] to-[#cba358] text-[#3c2f17] border border-[#cba358]/35 px-8 py-4 text-base font-bold shadow-[0_8px_20px_rgba(222,192,132,0.35)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  <span className="relative z-10">አሁን ይመዝገቡ</span>
-                </Link>
-              </div>
-            </section>
+              </section>
+            </div>
 
           </div>
         </main>
