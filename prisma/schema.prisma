@@ -68,3 +68,18 @@ model ScanLog {
   @@index([scanDate])
   @@index([scanDate, checkpoint])
 }
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+}
+
+model Admin {
+  id        String    @id @default(cuid())
+  name      String
+  email     String    @unique
+  password  String    // hashed
+  role      AdminRole @default(ADMIN)
+  createdAt DateTime  @default(now())
+
+  @@index([email])
+}
