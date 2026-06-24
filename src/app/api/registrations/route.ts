@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { uploadPaymentScreenshot } from "@/lib/cloudinary";
-import { appendToGoogleSheets } from "@/lib/sheets";
 
 export const runtime = "nodejs";
 import { prisma } from "@/lib/prisma";
@@ -96,35 +95,10 @@ export async function POST(request: Request) {
         id: true,
         fullName: true,
         status: true,
-        createdAt: true,
       },
     });
 
-    // Sync new registration to Google Sheets in the background
-    appendToGoogleSheets([
-      "-", // No registration number yet
-      data.fullName,
-      phone,
-      String(data.age),
-      data.gender,
-      data.maritalStatus,
-      data.occupation,
-      data.address,
-      data.churchName,
-      data.ministryArea,
-      data.needsAccommodation ? "Yes" : "No",
-      data.needsTshirt ? "Yes" : "No",
-      "Pending",
-      participant.createdAt.toLocaleString("en-US"),
-    ]).catch((sheetError) => {
-      console.error(`[Google Sheets Sync Error] Failed to append new registration for "${data.fullName}" (${phone}) to Google Sheets:`, sheetError);
-    });
-
-    return NextResponse.json({
-      id: participant.id,
-      fullName: participant.fullName,
-      status: participant.status,
-    }, { status: 201 });
+    return NextResponse.json(participant, { status: 201 });
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(

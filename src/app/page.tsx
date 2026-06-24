@@ -229,6 +229,71 @@ export default function Home() {
                 </div>
               </div>
 
+              {/* Training Topics & Speakers — 2-Column Grid */}
+              <div className="pt-6">
+                <div className="mb-5 flex items-center gap-3">
+                  <div className="h-8 w-1 rounded-full bg-gradient-to-b from-amber-500 to-amber-700"></div>
+                  <div>
+                    <h3 className="text-base font-extrabold text-[#2d220f] tracking-tight">የስልጠናው ርዕሶች እና አገልጋዮች</h3>
+                    <p className="text-[10px] text-stone-400 font-semibold uppercase tracking-widest">Training Topics & Speakers</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Speaker 1 */}
+                  <div className="group relative overflow-hidden rounded-xl border border-amber-200/40 bg-white/60 p-4 flex items-start gap-3.5 transition-all duration-300 hover:border-amber-400/50 hover:bg-white/80 hover:shadow-md">
+                    <div className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-400 rounded-full"></div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-amber-50 border border-amber-200/60 text-amber-800 font-black text-sm shadow-sm transition-all duration-300 group-hover:from-amber-500 group-hover:to-amber-600 group-hover:text-white group-hover:border-amber-500">
+                      1
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-[13px] font-bold text-[#2d220f] leading-tight">ዓላማ መር ሕይወት</h4>
+                      <p className="text-[11px] font-semibold text-amber-700 mt-0.5">በቢንያም ሰለሞን</p>
+                      <p className="text-[8px] text-stone-400 uppercase tracking-[0.12em] font-bold mt-0.5">Purpose-Driven Life</p>
+                    </div>
+                  </div>
+
+                  {/* Speaker 2 */}
+                  <div className="group relative overflow-hidden rounded-xl border border-amber-200/40 bg-white/60 p-4 flex items-start gap-3.5 transition-all duration-300 hover:border-amber-400/50 hover:bg-white/80 hover:shadow-md">
+                    <div className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-400 rounded-full"></div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-amber-50 border border-amber-200/60 text-amber-800 font-black text-sm shadow-sm transition-all duration-300 group-hover:from-amber-500 group-hover:to-amber-600 group-hover:text-white group-hover:border-amber-500">
+                      2
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-[13px] font-bold text-[#2d220f] leading-tight">ሙያን ለወንጌል ተልዕኮ</h4>
+                      <p className="text-[11px] font-semibold text-amber-700 mt-0.5">በዶ/ር አብርሃም ተ/ማርያም</p>
+                      <p className="text-[8px] text-stone-400 uppercase tracking-[0.12em] font-bold mt-0.5">Profession for Gospel Mission</p>
+                    </div>
+                  </div>
+
+                  {/* Speaker 3 */}
+                  <div className="group relative overflow-hidden rounded-xl border border-amber-200/40 bg-white/60 p-4 flex items-start gap-3.5 transition-all duration-300 hover:border-amber-400/50 hover:bg-white/80 hover:shadow-md">
+                    <div className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-400 rounded-full"></div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-amber-50 border border-amber-200/60 text-amber-800 font-black text-sm shadow-sm transition-all duration-300 group-hover:from-amber-500 group-hover:to-amber-600 group-hover:text-white group-hover:border-amber-500">
+                      3
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-[13px] font-bold text-[#2d220f] leading-tight">ጸሎትና የወንጌል ተልዕኮ</h4>
+                      <p className="text-[11px] font-semibold text-amber-700 mt-0.5">በዶ/ር ደስታ ለንጋና</p>
+                      <p className="text-[8px] text-stone-400 uppercase tracking-[0.12em] font-bold mt-0.5">Prayer and Gospel Mission</p>
+                    </div>
+                  </div>
+
+                  {/* Speaker 4 */}
+                  <div className="group relative overflow-hidden rounded-xl border border-amber-200/40 bg-white/60 p-4 flex items-start gap-3.5 transition-all duration-300 hover:border-amber-400/50 hover:bg-white/80 hover:shadow-md">
+                    <div className="absolute inset-y-0 left-0 w-0.5 bg-gradient-to-b from-amber-400 via-amber-600 to-amber-400 rounded-full"></div>
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-amber-100 to-amber-50 border border-amber-200/60 text-amber-800 font-black text-sm shadow-sm transition-all duration-300 group-hover:from-amber-500 group-hover:to-amber-600 group-hover:text-white group-hover:border-amber-500">
+                      4
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="text-[13px] font-bold text-[#2d220f] leading-tight">ተግባራዊ የክርስትና ሕይወት</h4>
+                      <p className="text-[11px] font-semibold text-amber-700 mt-0.5">በቄስ ዶ/ር ገለታ ሲሜሶ</p>
+                      <p className="text-[8px] text-stone-400 uppercase tracking-[0.12em] font-bold mt-0.5">Practical Christian Life</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="text-center pt-4">
                 <p className="text-xs text-stone-500 font-bold uppercase tracking-wider">Supported Financial Institutions</p>
                 <div className="mt-4 flex flex-wrap justify-center gap-4 text-[#5c4a2a] text-sm font-semibold">
@@ -329,6 +394,8 @@ export default function Home() {
                 </div>
               </div>
             </section>
+
+
 
             {/* Support and Organizer Side-by-Side Section */}
             <div className="grid gap-6 md:grid-cols-2">

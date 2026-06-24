@@ -313,7 +313,7 @@ export function RegistrationForm() {
             />
             <div className="flex-1">
               <span className={`block text-sm font-bold ${needsTshirt ? "text-amber-900" : "text-stone-850"}`}>
-                ቲሸርት ይፈልጋሉ? (+300 ETB)
+                ቲሸርት ይፈልጋሉ? (+500 ETB)
               </span>
               <span className="mt-1 block text-xs leading-relaxed text-stone-500">
                 ለስልጠናው የተዘጋጀ ቲሸርት ለመግዛት ከፈለጉ ይህን ሳጥን ይምረጡ።
@@ -339,13 +339,19 @@ export function RegistrationForm() {
             {needsTshirt && (
               <div className="flex justify-between text-stone-700 animate-fade-in">
                 <span>ቲሸርት (T-Shirt)</span>
-                <span>+300 ETB</span>
+                <span>+500 ETB</span>
+              </div>
+            )}
+            {needsAccom && needsTshirt && (
+              <div className="flex justify-between text-emerald-700 animate-fade-in">
+                <span>የጥቅል ቅናሽ (Bundle Discount)</span>
+                <span>-200 ETB</span>
               </div>
             )}
             <div className="pt-2.5 mt-2.5 border-t border-amber-200 flex justify-between font-extrabold text-stone-900 text-base">
               <span>ጠቅላላ ክፍያ (Total Payment)</span>
               <span className="text-amber-850 tracking-wide font-black">
-                {1000 + (needsAccom ? 200 : 0) + (needsTshirt ? 300 : 0)} ETB
+                {1000 + (needsAccom ? 200 : 0) + (needsTshirt ? 500 : 0) - (needsAccom && needsTshirt ? 200 : 0)} ETB
               </span>
             </div>
           </div>

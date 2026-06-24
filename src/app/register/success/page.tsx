@@ -32,8 +32,8 @@ export default function RegisterSuccessPage() {
             </h1>
 
             <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#4b3e25] font-semibold">
-              የምዝገባ ጥያቄዎ በተሳካ ሁኔታ ተልኳል። አስተዳዳሪዎች ከገመገሙ በኋላ በ 24 ሰአት ውስጥ በስልኮ አጭር የጽሁፍ መልዕክት ይደርሰዎታል።
-              ለበለጠ መረጃ በስልክ ቁጥር: +251910732070  #
+              የምዝገባ ጥያቄዎ በተሳካ ሁኔታ ተልኳል።
+              ለበለጠ መረጃ በስልክ ቁጥር: 0982755544   #
             </p>
 
             {/* Status Badge Box */}

@@ -66,7 +66,7 @@ export async function appendToGoogleSheets(row: string[]): Promise<boolean> {
 
   try {
     const token = await getAccessToken(email, privateKey);
-    const range = "A:N"; // Appends to the first sheet, columns A to N
+    const range = "A:O"; // Appends to the first sheet, columns A to O
     const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}:append?valueInputOption=USER_ENTERED`;
 
     const response = await fetch(url, {

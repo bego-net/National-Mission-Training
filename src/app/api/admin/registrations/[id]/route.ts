@@ -125,6 +125,7 @@ export async function PATCH(request: Request, context: RouteContext) {
     // Sync approved participant data to Google Sheets in the background
     if (nextStatus === "APPROVED" && updated.registrationNumber) {
       appendToGoogleSheets([
+        existing.id,
         updated.registrationNumber,
         existing.fullName,
         existing.phone,
