@@ -433,7 +433,7 @@ export default function Home() {
                       </div>
                       <div className="flex-1 space-y-1">
                         <p className="text-[10px] font-bold text-emerald-950 uppercase tracking-wide">Safaricom</p>
-                        <a href="tel:+251710557591" className="block text-sm font-bold font-mono text-stone-800 hover:text-emerald-700 transition">0710557591</a>
+                        <a href="tel:+251710557591" className="block text-sm font-bold font-mono text-stone-800 hover:text-emerald-700 transition">0714744098</a>
                       </div>
                     </div>
 
