@@ -63,7 +63,7 @@ export default function RegisterPage() {
                         </p>
                         <div className="mt-3 p-3 bg-amber-100/40 rounded-xl border border-amber-200/50">
                           <p className="text-xs font-bold text-amber-900 mb-1">CBE (የኢትዮጵያ ንግድ ባንክ)</p>
-                          <p className="text-sm font-mono font-bold text-stone-800 tracking-wider">1000702481641</p>
+                          <p className="text-sm font-mono font-bold text-stone-800 tracking-wider">1000702503756</p>
                           <p className="text-[10px] font-bold text-amber-700 uppercase tracking-widest mt-1">Simh Yikedes</p>
                         </div>
                       </div>
