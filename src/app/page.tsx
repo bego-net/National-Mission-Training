@@ -216,7 +216,6 @@ export default function Home() {
                 <div className="rounded-2xl border border-amber-200/50 bg-white/60 p-5 backdrop-blur-md relative overflow-hidden group hover:border-amber-300 hover:bg-white/80 transition-all duration-300 shadow-sm">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-amber-500/5 to-transparent rounded-bl-full"></div>
                   <h4 className="text-xl sm:text-2xl font-black text-amber-950 tracking-tight">ሆሳዕና</h4>
-                  <p className="mt-1.5 text-xs font-bold text-[#5c4a2a] tracking-wide">ስልጠናው ቦታ (እናት ቃለ ሕይወት)</p>
                   <p className="mt-0.5 text-[10px] text-stone-400 uppercase">Training Venue</p>
                 </div>
 
