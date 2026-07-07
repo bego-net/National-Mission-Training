@@ -189,6 +189,7 @@ export async function syncParticipantToSheet(participant: {
   ministryArea: string;
   needsAccommodation: boolean;
   needsTshirt: boolean;
+  tShirtSize: string | null;
   registrationNumber: string | null;
   createdAt: Date;
 }): Promise<SyncResult> {
@@ -215,6 +216,10 @@ export async function syncParticipantToSheet(participant: {
     }
 
     // ── Build row ──
+    const tShirtValue = participant.needsTshirt
+      ? (participant.tShirtSize ? `Yes (${participant.tShirtSize})` : "Yes")
+      : "No";
+
     const row = [
       participant.id,
       participant.registrationNumber ?? "",
@@ -228,7 +233,7 @@ export async function syncParticipantToSheet(participant: {
       participant.churchName,
       participant.ministryArea,
       participant.needsAccommodation ? "Yes" : "No",
-      participant.needsTshirt ? "Yes" : "No",
+      tShirtValue,
       "Approved",
       participant.createdAt.toLocaleString("en-US", { timeZone: "Africa/Nairobi" }),
     ];

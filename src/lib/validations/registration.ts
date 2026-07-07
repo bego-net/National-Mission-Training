@@ -37,6 +37,15 @@ export const registrationSchema = z.object({
   ministryArea: z.string().trim().min(2, "የአገልግሎት ዘርፍ አስገዳጅ ነው"),
   needsAccommodation: z.boolean(),
   needsTshirt: z.boolean(),
+  tShirtSize: z.string().nullable().optional(),
+}).refine((data) => {
+  if (data.needsTshirt) {
+    return !!data.tShirtSize && ["S", "M", "L", "XL", "XXL"].includes(data.tShirtSize);
+  }
+  return true;
+}, {
+  message: "እባክዎ የቲሸርት መጠን ይምረጡ",
+  path: ["tShirtSize"],
 });
 
 export type RegistrationInput = z.infer<typeof registrationSchema>;

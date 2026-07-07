@@ -35,6 +35,7 @@ export async function POST(request: Request) {
       ministryArea: formData.get("ministryArea"),
       needsAccommodation: formData.get("needsAccommodation") === "true",
       needsTshirt: formData.get("needsTshirt") === "true",
+      tShirtSize: (formData.get("tShirtSize") as string) || null,
     };
 
     const parsed = registrationSchema.safeParse(raw);
@@ -89,6 +90,7 @@ export async function POST(request: Request) {
         ministryArea: data.ministryArea,
         needsAccommodation: data.needsAccommodation,
         needsTshirt: data.needsTshirt,
+        tShirtSize: data.needsTshirt ? data.tShirtSize : null,
         paymentScreenshot,
       },
       select: {

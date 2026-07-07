@@ -38,6 +38,7 @@ model Participant {
   ministryArea       String
   needsAccommodation Boolean            @default(false)
   needsTshirt        Boolean            @default(false)
+  tShirtSize         String?
   paymentScreenshot  String             @default("")
   status             RegistrationStatus @default(PENDING)
   registrationNumber String?            @unique

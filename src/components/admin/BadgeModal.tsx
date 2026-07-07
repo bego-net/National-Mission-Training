@@ -16,6 +16,7 @@ type Registration = {
   ministryArea: string;
   needsAccommodation: boolean;
   needsTshirt: boolean;
+  tShirtSize?: string | null;
   paymentScreenshot: string;
   status: RegistrationStatus;
   registrationNumber?: string;

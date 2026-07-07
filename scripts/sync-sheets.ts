@@ -125,6 +125,10 @@ async function main() {
       continue;
     }
 
+    const tShirtValue = p.needsTshirt
+      ? (p.tShirtSize ? `Yes (${p.tShirtSize})` : "Yes")
+      : "No";
+
     const row = [
       p.id,
       p.registrationNumber ?? "",
@@ -138,7 +142,7 @@ async function main() {
       p.churchName,
       p.ministryArea,
       p.needsAccommodation ? "Yes" : "No",
-      p.needsTshirt ? "Yes" : "No",
+      tShirtValue,
       "Approved",
       p.createdAt.toLocaleString("en-US", { timeZone: "Africa/Nairobi" }),
     ];

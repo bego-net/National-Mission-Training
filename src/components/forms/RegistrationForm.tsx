@@ -63,6 +63,7 @@ export function RegistrationForm() {
       ministryArea: formData.get("ministryArea"),
       needsAccommodation: formData.get("needsAccommodation") === "on",
       needsTshirt: formData.get("needsTshirt") === "on",
+      tShirtSize: (formData.get("tShirtSize") as string) || null,
     };
 
     const fieldErrors: Record<string, string> = {};
@@ -91,6 +92,10 @@ export function RegistrationForm() {
     formData.set(
       "needsTshirt",
       parsed.data.needsTshirt ? "true" : "false",
+    );
+    formData.set(
+      "tShirtSize",
+      parsed.data.needsTshirt ? (parsed.data.tShirtSize || "") : "",
     );
 
     setIsSubmitting(true);
@@ -321,6 +326,31 @@ export function RegistrationForm() {
             </div>
           </label>
         </div>
+
+        {/* Needs T-Shirt Size Selector */}
+        {needsTshirt && (
+          <div className="sm:col-span-2 animate-fade-in">
+            <Field label="የቲሸርት መጠን * (T-Shirt Size)" htmlFor="tShirtSize" error={errors.tShirtSize} dark>
+              <div className="relative">
+                <select id="tShirtSize" name="tShirtSize" defaultValue="" className={selectClassName}>
+                  <option value="" disabled className="bg-white text-stone-400">
+                    የቲሸርት መጠን ይምረጡ (Select Size)
+                  </option>
+                  {["S", "M", "L", "XL", "XXL"].map((size) => (
+                    <option key={size} value={size} className="bg-white text-stone-900">
+                      {size}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4 text-amber-800">
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
+              </div>
+            </Field>
+          </div>
+        )}
 
         {/* Dynamic Pricing Breakdown Display */}
         <div className="sm:col-span-2 rounded-2xl border border-amber-200 bg-amber-50/20 p-5 backdrop-blur-sm">

@@ -70,6 +70,7 @@ export async function GET(request: Request) {
         ministryArea: true,
         needsAccommodation: true,
         needsTshirt: true,
+        tShirtSize: true,
         paymentScreenshot: true,
         status: true,
         registrationNumber: true,

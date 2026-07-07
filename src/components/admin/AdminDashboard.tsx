@@ -29,6 +29,7 @@ type Registration = {
   ministryArea: string;
   needsAccommodation: boolean;
   needsTshirt: boolean;
+  tShirtSize?: string | null;
   paymentScreenshot: string;
   status: RegistrationStatus;
   registrationNumber?: string;
@@ -642,7 +643,7 @@ export function AdminDashboard({ username, role }: AdminDashboardProps) {
                             )}
                             {registration.needsTshirt && (
                               <span className="text-[9px] font-extrabold bg-amber-50 text-amber-700 border border-amber-150 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                                T-Shirt Required
+                                T-Shirt{registration.tShirtSize ? ` (${registration.tShirtSize})` : ""}
                               </span>
                             )}
 
@@ -841,7 +842,7 @@ export function AdminDashboard({ username, role }: AdminDashboardProps) {
                                 />
                                 <Detail
                                   label="T-Shirt Needed?"
-                                  value={registration.needsTshirt ? "Yes, T-Shirt Required" : "No, T-shirt not required"}
+                                  value={registration.needsTshirt ? (registration.tShirtSize ? `Yes (${registration.tShirtSize})` : "Yes") : "No"}
                                 />
                                 <Detail
                                   label="Gate Entry Status"
