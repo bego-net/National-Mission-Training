@@ -42,10 +42,12 @@ model Participant {
   status             RegistrationStatus @default(PENDING)
   registrationNumber String?            @unique
   qrCode             String?
+  sheetSynced        Boolean            @default(false)
   createdAt          DateTime           @default(now())
   scanLogs           ScanLog[]
 
   @@index([status])
+  @@index([sheetSynced])
   @@index([fullName])
   @@index([phone])
   @@index([createdAt])

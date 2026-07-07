@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import QRCode from "qrcode";
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { appendToGoogleSheets } from "@/lib/sheets";
+import { syncParticipantToSheet } from "@/lib/sheets";
 import { updateStatusSchema } from "@/lib/validations/auth";
 
 type RouteContext = {
@@ -43,9 +43,11 @@ export async function PATCH(request: Request, context: RouteContext) {
         ministryArea: true,
         needsAccommodation: true,
         needsTshirt: true,
+        paymentScreenshot: true,
         status: true,
         registrationNumber: true,
         qrCode: true,
+        sheetSynced: true,
         createdAt: true,
       },
     });
@@ -116,36 +118,48 @@ export async function PATCH(request: Request, context: RouteContext) {
       select: {
         id: true,
         fullName: true,
+        phone: true,
+        age: true,
+        gender: true,
+        maritalStatus: true,
+        occupation: true,
+        address: true,
+        churchName: true,
+        ministryArea: true,
+        needsAccommodation: true,
+        needsTshirt: true,
         status: true,
         registrationNumber: true,
         qrCode: true,
+        sheetSynced: true,
+        createdAt: true,
       },
     });
 
-    // Sync approved participant data to Google Sheets in the background
-    if (nextStatus === "APPROVED" && updated.registrationNumber) {
-      appendToGoogleSheets([
-        existing.id,
-        updated.registrationNumber,
-        existing.fullName,
-        existing.phone,
-        String(existing.age),
-        existing.gender,
-        existing.maritalStatus,
-        existing.occupation,
-        existing.address,
-        existing.churchName,
-        existing.ministryArea,
-        existing.needsAccommodation ? "Yes" : "No",
-        existing.needsTshirt ? "Yes" : "No",
-        "Approved",
-        existing.createdAt.toLocaleString("en-US", { timeZone: "Africa/Nairobi" }),
-      ]).catch((sheetError) => {
-        console.error("Failed to append to Google Sheets on approval (background):", sheetError);
-      });
+    // ── Google Sheets sync (awaited, with retry built-in) ──
+    // Only sync if newly approved and not already synced
+    let sheetSyncResult = null;
+    if (nextStatus === "APPROVED" && updated.registrationNumber && !existing.sheetSynced) {
+      sheetSyncResult = await syncParticipantToSheet(updated);
+
+      if (!sheetSyncResult.success) {
+        // Log the failure but DON'T fail the approval — the reconciliation
+        // API can pick up unsynced rows later.
+        console.error(
+          `[Approval] Sheets sync failed for ${updated.fullName} (${updated.registrationNumber}). ` +
+          `Will be retried via reconciliation. Error: ${sheetSyncResult.error}`
+        );
+      }
     }
 
-    return NextResponse.json(updated);
+    return NextResponse.json({
+      id: updated.id,
+      fullName: updated.fullName,
+      status: updated.status,
+      registrationNumber: updated.registrationNumber,
+      qrCode: updated.qrCode,
+      sheetSynced: updated.sheetSynced || (sheetSyncResult?.success ?? false),
+    });
   } catch (error) {
     console.error("Update registration error:", error);
     return NextResponse.json(
