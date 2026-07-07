@@ -33,7 +33,8 @@ export default function RegisterSuccessPage() {
 
             <p className="mt-4 text-sm sm:text-base leading-relaxed text-[#4b3e25] font-semibold">
               የምዝገባ ጥያቄዎ በተሳካ ሁኔታ ተልኳል።
-              ለበለጠ መረጃ በስልክ ቁጥር: 0982755544   #
+              ለበለጠ መረጃ በስልክ ቁጥር: 0982755544 ይደውሉ ወይም
+              ከ 24 ሰዓት በኃላ የምዝገባ ማረጋገጫው ላይ የተመዘገቡበትን ስልክ ቁጥር በማስገባት የምዝገባውን ሂደት ያረጋግጡ።
             </p>
 
             {/* Status Badge Box */}
