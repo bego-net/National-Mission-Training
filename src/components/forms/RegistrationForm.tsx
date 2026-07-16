@@ -143,19 +143,15 @@ export function RegistrationForm() {
           </Field>
         </div>
 
-        {/* Phone */}
-        <div>
-          <Field label="ስልክ ቁጥር *" htmlFor="phone" error={errors.phone} dark>
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              autoComplete="tel"
-              className={inputClassName}
-              placeholder="09xxxxxxxx"
-            />
-          </Field>
-        </div>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          autoComplete="tel"
+          className={inputClassName}
+          placeholder="09xxxxxxxx / 07xxxxxxxx"
+          pattern="^(09|07)[0-9]{8}$"
+        />
 
         {/* Age */}
         <div>
@@ -279,8 +275,8 @@ export function RegistrationForm() {
         <div className="sm:col-span-2">
           <label
             className={`flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300 cursor-pointer select-none ${needsAccom
-                ? "border-amber-500 bg-amber-50 shadow-lg shadow-amber-500/5"
-                : "border-amber-200 bg-white/50 hover:bg-white/80"
+              ? "border-amber-500 bg-amber-50 shadow-lg shadow-amber-500/5"
+              : "border-amber-200 bg-white/50 hover:bg-white/80"
               }`}
           >
             <input
@@ -305,8 +301,8 @@ export function RegistrationForm() {
         <div className="sm:col-span-2">
           <label
             className={`flex items-start gap-4 rounded-2xl border p-4 transition-all duration-300 cursor-pointer select-none ${needsTshirt
-                ? "border-amber-500 bg-amber-50 shadow-lg shadow-amber-500/5"
-                : "border-amber-200 bg-white/50 hover:bg-white/80"
+              ? "border-amber-500 bg-amber-50 shadow-lg shadow-amber-500/5"
+              : "border-amber-200 bg-white/50 hover:bg-white/80"
               }`}
           >
             <input
@@ -390,17 +386,17 @@ export function RegistrationForm() {
         {/* Payment Screenshot File Upload */}
         <div className="sm:col-span-2">
           <Field
-            label="የክፍያ ማረጋገጫ ፎቶ *"
+            label="የክፍያ ደረሰኝ (Receipt) *"
             htmlFor="paymentScreenshot"
             error={errors.paymentScreenshot}
             dark
           >
             <div
               className={`group relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed py-8 px-4 text-center transition-all duration-300 cursor-pointer ${selectedFileName
-                  ? "border-emerald-500 bg-emerald-50"
-                  : errors.paymentScreenshot
-                    ? "border-rose-500 bg-rose-50 hover:border-rose-450"
-                    : "border-amber-200 bg-white/50 hover:border-amber-500/40 hover:bg-white/80"
+                ? "border-emerald-500 bg-emerald-50"
+                : errors.paymentScreenshot
+                  ? "border-rose-500 bg-rose-50 hover:border-rose-450"
+                  : "border-amber-200 bg-white/50 hover:border-amber-500/40 hover:bg-white/80"
                 }`}
             >
               {selectedFileName ? (
@@ -420,10 +416,10 @@ export function RegistrationForm() {
               )}
 
               <span className="mt-3 block text-sm font-bold text-stone-700">
-                {selectedFileName || "የማረጋገጫ ፎቶ ወይም ፒዲኤፍ እዚህ ይስቀሉ"}
+                {selectedFileName || "የክፍያ ደረሰኝ ወይም የሞባይል ባንክ ስክሪንሾት ያስገቡ"}
               </span>
               <span className="mt-1 block text-xs text-stone-500">
-                ክሊክ በማድረግ ወይም ፋይሉን ጎትቶ እዚህ በመጣል ይስቀሉ
+                Upload payment receipt or Mobile Banking screenshot
               </span>
               <span className="mt-2 text-[10px] font-medium tracking-wide text-stone-500 uppercase">
                 jpg, jpeg, png, pdf (ቢበዛ {MAX_PAYMENT_FILE_SIZE / (1024 * 1024)}MB)
