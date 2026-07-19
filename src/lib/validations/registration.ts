@@ -12,14 +12,14 @@ export const maritalStatusOptions = [
   { value: "WIDOWED", label: "የሞተበት/ባት" },
 ] as const;
 
-const phoneRegex = /^(\+251|0)?9\d{8}$/;
+const phoneRegex = /^(\+251|0)?[97]\d{8}$/;
 
 export const registrationSchema = z.object({
   fullName: z.string().trim().min(2, "ሙሉ ስም አስገዳጅ ነው"),
   phone: z
     .string()
     .trim()
-    .regex(phoneRegex, "ትክክለኛ የስልክ ቁጥር ያስገቡ (09xxxxxxxx)"),
+    .regex(phoneRegex, "ትክክለኛ የስልክ ቁጥር ያስገቡ (09xxxxxxxx / 07xxxxxxxx)"),
   age: z.coerce
     .number()
     .int("ዕድሜ ቁጥር መሆን አለበት")
