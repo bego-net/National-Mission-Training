@@ -143,15 +143,20 @@ export function RegistrationForm() {
           </Field>
         </div>
 
-        <input
-          id="phone"
-          name="phone"
-          type="tel"
-          autoComplete="tel"
-          className={inputClassName}
-          placeholder="09xxxxxxxx / 07xxxxxxxx"
-          pattern="^(09|07)[0-9]{8}$"
-        />
+        {/* Phone */}
+        <div>
+          <Field label="ስልክ ቁጥር *" htmlFor="phone" error={errors.phone} dark>
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              autoComplete="tel"
+              className={inputClassName}
+              placeholder="09xxxxxxxx / 07xxxxxxxx"
+              pattern="^(09|07)[0-9]{8}$"
+            />
+          </Field>
+        </div>
 
         {/* Age */}
         <div>
