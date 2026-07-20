@@ -262,16 +262,31 @@ export function AdminDashboard({ username, role }: AdminDashboardProps) {
     const badgeHTML = (r: Registration) => `
       <div class="badge">
         <div class="badge-header">
+          <svg class="deco" viewBox="0 0 200 70" preserveAspectRatio="none" fill="none"><path d="M-10 55 Q50 15 100 40 Q150 65 210 28" stroke="rgba(251,191,36,0.4)" stroke-width="1.2" fill="none"/><path d="M-10 38 Q60 4 120 34 Q168 58 210 18" stroke="rgba(251,191,36,0.2)" stroke-width="0.8" fill="none"/><circle cx="170" cy="10" r="22" fill="rgba(255,255,255,0.04)"/></svg>
           <div class="title">ስምህ ይቀደስ</div>
           <div class="subtitle">National Mission Training</div>
+          <div class="gold-line"></div>
         </div>
         <div class="badge-body">
+          <svg class="deco" viewBox="0 0 200 200" preserveAspectRatio="none" fill="none" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1; pointer-events: none; z-index: 0;">
+            <path d="M-10 50 Q50 90 100 60 Q150 30 210 70" stroke="#C8A24A" stroke-width="1.2" fill="none"/>
+            <path d="M-10 150 Q60 110 120 140 Q180 170 210 130" stroke="#C8A24A" stroke-width="1.2" fill="none"/>
+            <circle cx="-10" cy="100" r="40" stroke="#C8A24A" stroke-width="0.8" stroke-dasharray="2,2" fill="none"/>
+            <circle cx="210" cy="90" r="35" stroke="#C8A24A" stroke-width="0.8" stroke-dasharray="2,2" fill="none"/>
+          </svg>
+          <div class="field-label"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#C8A24A" stroke-width="2.5" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>ሙሉ ስም</div>
           <div class="name">${r.fullName}</div>
+          <div class="divider"></div>
+          <div class="field-label"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="#C8A24A" stroke-width="2.5" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>ቤተ ክርስቲያን</div>
           <div class="church">${r.churchName}</div>
-          ${r.qrCode ? `<div class="qr-wrap"><img class="qr" src="${r.qrCode}" alt="QR" /></div>` : ""}
+          <div class="divider"></div>
+          ${r.qrCode ? `<div class="qr-wrap"><div class="qc tl"></div><div class="qc tr"></div><div class="qc bl"></div><div class="qc br"></div><img class="qr" src="${r.qrCode}" alt="QR" /></div>` : ""}
           ${r.registrationNumber ? `<div class="reg">${r.registrationNumber}</div>` : ""}
         </div>
-        <div class="badge-footer">HOSSANA GOSPEL MOVEMENT (HGM)</div>
+        <div class="badge-footer">
+          <svg class="deco" viewBox="0 0 200 28" preserveAspectRatio="none" fill="none"><path d="M-10 20 Q50 4 100 14 Q150 24 210 6" stroke="rgba(251,191,36,0.35)" stroke-width="1.2" fill="none"/></svg>
+          <div class="footer-text">Hossana Gospel Movement (HGM)</div>
+        </div>
       </div>`;
 
     const pw = window.open("", "_blank");
@@ -279,27 +294,40 @@ export function AdminDashboard({ username, role }: AdminDashboardProps) {
 
     pw.document.write(`<!DOCTYPE html><html><head><title>All Badges – Print</title>
     <style>
-      @page { size: A4 landscape; margin: 10mm; }
+      @page { size: A4 landscape; margin: 8mm; }
       * { box-sizing: border-box; margin: 0; padding: 0; }
       body { font-family: system-ui, -apple-system, sans-serif; background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      .grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 8mm; width: 100%; height: 100vh; page-break-after: always; }
+      .grid { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); gap: 4mm; width: 100%; height: calc(210mm - 16mm); page-break-after: always; }
       .grid:last-child { page-break-after: auto; }
-      .badge { display: flex; flex-direction: column; border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden; background: #fff; height: 100%; }
-      .badge-header { background: linear-gradient(135deg,#1e3a8a,#3730a3); color: #fff; text-align: center; padding: 10px 8px; }
-      .title { font-size: 18px; font-weight: 800; }
-      .subtitle { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; opacity: .85; margin-top: 2px; }
-      .badge-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px; text-align: center; gap: 4px; }
-      .name { font-size: 15px; font-weight: 800; color: #0f172a; line-height: 1.2; }
-      .church { font-size: 10px; font-weight: 600; color: #475569; }
-      .qr-wrap { margin: 6px 0; border: 1px solid #f1f5f9; border-radius: 6px; padding: 3px; background: #fff; }
-      .qr { width: 80px; height: 80px; display: block; }
-      .reg { font-family: monospace; font-size: 10px; font-weight: 700; color: #1e3a8a; background: #eff6ff; border: 1px solid #dbeafe; padding: 2px 8px; border-radius: 4px; }
-      .badge-footer { text-align: center; padding: 6px; border-top: 1px solid #f1f5f9; background: #fafafa; font-size: 7px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: .5px; }
+      .badge { display: flex; flex-direction: column; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: #fff; }
+      .badge-header { position: relative; overflow: hidden; background: linear-gradient(135deg,#b91c1c 0%,#dc2626 45%,#ea580c 100%); color: #fff; text-align: center; padding: 6px 8px 5px; }
+      .deco { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+      .title { position: relative; z-index: 1; font-size: 17.4px; font-weight: 900; letter-spacing: 0.2px; text-shadow: 0 1px 3px rgba(0,0,0,0.25); }
+      .subtitle { position: relative; z-index: 1; font-size: 8.64px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; opacity: .88; margin-top: 2px; }
+      .gold-line { position: relative; z-index: 1; width: 55%; height: 1px; background: linear-gradient(90deg,transparent,#C8A24A,transparent); margin: 4px auto 0; }
+      .badge-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5px 8px; text-align: center; gap: 0; background: #1E4FA3; position: relative; overflow: hidden; }
+      .badge-body > * { position: relative; z-index: 1; }
+      .badge-body > .deco { position: absolute; z-index: 0; }
+      .field-label { display: flex; align-items: center; gap: 3px; font-size: 7.92px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; color: #C8A24A; margin-bottom: 1px; }
+      .ico { width: 7px; height: 7px; flex-shrink: 0; }
+      .name { font-size: 14.3px; font-weight: 900; color: #ffffff; line-height: 1.2; }
+      .church { font-size: 10.56px; font-weight: 600; color: #e5e7eb; }
+      .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, #C8A24A, transparent); margin: 4px 0; }
+      .qr-wrap { position: relative; margin: 3px 0; padding: 4px; border: 1.5px solid #C8A24A; border-radius: 6px; background: #fff; box-shadow: 0 0 0 3px rgba(200, 162, 74, 0.2); }
+      .qc { position: absolute; width: 7px; height: 7px; border-color: #C8A24A; border-style: solid; }
+      .qc.tl { top:-1px; left:-1px; border-width:2px 0 0 2px; border-radius:2px 0 0 0; }
+      .qc.tr { top:-1px; right:-1px; border-width:2px 2px 0 0; border-radius:0 2px 0 0; }
+      .qc.bl { bottom:-1px; left:-1px; border-width:0 0 2px 2px; border-radius:0 0 0 2px; }
+      .qc.br { bottom:-1px; right:-1px; border-width:0 2px 2px 0; border-radius:0 0 2px 0; }
+      .qr { width: 65px; height: 65px; display: block; }
+      .reg { margin-top: 4px; font-family: monospace; font-size: 9.35px; font-weight: 800; color: #ffffff; background: rgba(200, 162, 74, 0.15); border: 1px solid #C8A24A; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.8px; }
+      .badge-footer { position: relative; overflow: hidden; background: linear-gradient(135deg,#b91c1c 0%,#dc2626 45%,#ea580c 100%); padding: 5px 8px; text-align: center; }
+      .footer-text { position: relative; z-index: 1; font-size: 7.92px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.2px; color: #fff; opacity: .92; }
     </style></head><body>`);
 
-    // Group into pages of 4
-    for (let i = 0; i < approved.length; i += 4) {
-      const page = approved.slice(i, i + 4);
+    // Group into pages of 8
+    for (let i = 0; i < approved.length; i += 8) {
+      const page = approved.slice(i, i + 8);
       pw.document.write(`<div class="grid">${page.map(badgeHTML).join("")}</div>`);
     }
 
